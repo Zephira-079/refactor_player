@@ -9,3 +9,4 @@
 - add <code> </code> tag : to store some function/commands
 - add progress bar
 - add feature for query strings ?q="this+is+a+query"&t="20"
+- add feature if it's online or offline

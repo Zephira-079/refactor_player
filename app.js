@@ -1,5 +1,6 @@
 const options = document.querySelector(".options")
 const track_controls = document.querySelector(".track-controls")
+const track_holder = document.querySelector(".track-holder")
 
 const manifest_option = document.querySelector(".manifest-option")
 const manifest_containers = document.querySelector(".manifest-containers")
@@ -51,8 +52,6 @@ const manifest_containers_state = (() => {
 const manifest_track_controls_state = (() => {
     let state = true
 
-    const track_holder = document.querySelector(".track-holder")
-
     return () => {
         if(state){
             track_holder.style.display = "none"
@@ -69,11 +68,24 @@ const manifest_track_controls_state = (() => {
     }
 })()
 
-const initializer = (() => {
-    const track_collection = []
+var initializer = (function() {
+    const collection = []
+    const holder = []
 
     let recent_name = undefined
     let recent_path = undefined
+
+    const shifter = (path,name) => {
+        if(source_collection.audio().ended && holder != undefined) {
+            source_collection.play(path,name)
+            holder.shift()
+            track_holder.children[0].remove()
+        }
+    }
+
+    setInterval(() => {
+        shifter(holder[0][0],holder[0][1])
+    }, 1000)
 
     return {
         recent_init(path,name) {
@@ -84,18 +96,24 @@ const initializer = (() => {
             return recent_name
         },
         recent_source() {
-            return `${recent_path}/${recent_name}`
+            return [recent_path,recent_name]
         },
-        track_init(path,name) {
-            track_collection.push(`${path}/${name}`)
+        collection_init(path,name) {
+            collection.push([path,name])
         },
-        get_track_collection() {
-            return track_collection
+        get_collection() {
+            return collection
+        },
+        holder_init(path,name) {
+            holder.push([path,name])
+        },
+        get_holder() {
+            return holder
         }
     }
 })()
 
-const source_collection = (() => {
+var source_collection = (function() {
     const audio = new Audio()
     const audio_player = document.querySelector(".audio-player")
     const audio_player_icon = document.querySelector(".audio-player-icon")
@@ -143,7 +161,7 @@ const source_collection = (() => {
         async play(path,name) {
             if(name == initializer.name() && !audio.paused) return
             else if(name == initializer.name() && !audio.paused){
-                audio.play()
+                audio_play_state()
             }
             else {
                 audio_play_state()
@@ -169,13 +187,14 @@ const source_collection = (() => {
     }
 })()
 
-const track_collection = (() => {
+var track_collection = (function() {
 
     let icon_timestamp = 10
-    const track_holder = document.querySelector(".track-holder")
 
     return {
         only(path,name) {
+            initializer.holder_init(path,name)
+
             const track = document.createElement("div")
             track.setAttribute("class","track")
 
@@ -209,9 +228,6 @@ const track_collection = (() => {
                 })
             })
             track_icon_observer.observe(track_icon)
-        },
-        remove_only() {
-
         }
     }
 })()
@@ -258,7 +274,7 @@ function create_collection() {
 
     return {
         only(path,name) {
-            initializer.track_init(path,name)
+            initializer.collection_init(path,name)
 
             const ctr_group = document.createElement("div")
             ctr_group.setAttribute("class","ctr-group")
@@ -376,7 +392,7 @@ function create_collection() {
         },
         many(path,names) {
             names.forEach((name,index) => {
-                initializer.track_init(path,name)
+                initializer.collection_init(path,name)
     
                 const ctr_group = document.createElement("div")
                 ctr_group.setAttribute("class","ctr-group")
