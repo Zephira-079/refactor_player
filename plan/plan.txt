@@ -1,0 +1,63 @@
+-/ add shadow effects to those container
+
+-/ add two wrapper - file mode and container mode
+
+-/ when ctr was hovered play the video , then when hovered out back into currentTime = 10
+
+goal: when the user click the plus(+) sign it will add to playlist, but if he/she click the ctr it will play directly.
+
+- add override button , when override is "on/true", the player dont care(it will not pause) either you play other audio/video in other application
+
+- when icon ciick, go to document.querySelector(".media")
+
+-/ give a path example : "MaidCat"
+
+- add document.readyState = "complete" to initialized document
+
+- add preload-poster = "lucia"
+
+- delay_content to delay video load
+
+-/ intersection possible ctr to make website faster
+
+-/ add ripple effect
+
+- create object that will store your previous interaction. 
+    for example : 
+        - it will store your playlist 
+        - it will store the custom function that you add (ctr_template_scroller,add_filler)
+
+    to use preference :
+        localStorage:
+            - localStorage.set("preference",preference)
+            - localStorage.get("preference")
+            - localStorage.removeItem("preference")
+        and vice versa in :
+            - cookie
+            
+
+- add feature that can repeat the certain time for example:
+    - play only from 10seconds to 30seconds
+
+- add feature where you can add youtube video links through embed tag
+
+- use the pixel width(innerWidth or else) to immitate <input type="range">
+
+-/ add option to change volume function
+
+-/ add last played list 
+
+- add <code> </code> (help) tag to store some function/commands
+
+- add upnext at mode: idle (random<= man this is hard xd,reverse)
+    for example: ["first track","second track","third track"]
+        - now playing "first track" upnext "second track"
+
+- add total time of all music:
+    for example: music.duration + music2.duration + ...vice_versa
+
+-/ add notice function
+- add news function <marquee>
+- add unfinish playlist : localStorage.setItem("playlist",some array)
+
+- add feature for query strings ?q="this+is+a+query"&t="20"

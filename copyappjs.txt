@@ -1,0 +1,911 @@
+        let plist_vl = []
+        let pathList = []
+        let lastplayed_lists = []
+        let currentPlay = null
+        let currentAudio = new Audio()
+        let audio_volume = 1
+        
+        const ctr_wrapper = document.querySelector(".ctr-wrapper")
+        const fl_wrapper = document.querySelector(".fl-wrapper")
+
+        const media = document.querySelector(".media")
+
+        const sd_pg = document.querySelector(".sd-pg")
+        const sd_btn = document.querySelector(".sd-btn")
+        const sd_view = document.querySelector(".sd-view")
+        const sd_search = document.querySelector(".sd-search")
+        const sd_wrapper = document.querySelector(".sd-wrapper")
+        const sd_option = document.querySelector(".sd-option")
+        const sd_opt_trig = document.querySelector(".sd-opt-trig")
+
+        const curr_icon = document.querySelector(".curr-icon")
+        const curr_player = document.querySelector(".curr-pause")
+        const title = document.querySelector(".title")
+        const range = document.querySelector(".range")
+
+        const playlist_icon = document.querySelector(".playlist-icon")
+        const playlist_holder = document.querySelector(".playlist-holder")
+        
+        let plist_option = ["default","random","reverse"]
+        let plist_bhv = {
+            "type" : "default"
+        }
+        let plist_idle_option = ["none","default","random","reverse"]
+        let plist_idle = {
+            "type" : "none"
+        }
+
+        const plist_bhv_label = document.querySelector(".plist-bhv-label")
+        const plist_bhv_prev = document.querySelector(".plist-bhv-prev")
+        const plist_bhv_next = document.querySelector(".plist-bhv-next")
+        
+        const plist_idle_label = document.querySelector(".plist-idle-label")
+        const plist_idle_prev = document.querySelector(".plist-idle-prev")
+        const plist_idle_next = document.querySelector(".plist-idle-next")
+
+        function noticeMe(text) {
+            const body = document.body
+
+            const note = document.createElement("div")
+            note.setAttribute("class","noticeMe")
+            note.textContent = text.trim()
+            
+            note.addEventListener("pointerdown",() => {
+                note.remove()
+            })
+            window.addEventListener("pointerdown",() => {
+                setTimeout(() => {
+                    note.remove()
+                }, 4000)
+            })
+            
+            body.appendChild(note)
+        }
+        // noticeMe()
+
+
+        let bhv_range = 0
+        function switch_bhv(option) {
+            plist_bhv.type = option.toString()
+            plist_bhv_label.textContent = `mode : ${option}`
+            if(plist_option.indexOf(option) != bhv_range) {
+                bhv_range = plist_option.indexOf(option)
+            }
+        }
+        function switch_bhv_prev() {
+            if(bhv_range > 0){
+                bhv_range -= 1
+                switch_bhv(plist_option[bhv_range])
+            }
+        }
+        function switch_bhv_next() {
+            if(bhv_range < plist_option.length - 1){
+                bhv_range += 1
+                switch_bhv(plist_option[bhv_range])
+            }
+        }
+        
+        let idle_range = 0
+        function switch_idle(option) {
+            plist_idle.type = option.toString()
+            plist_idle_label.textContent = `idle : ${option}`
+            if(plist_idle_option.indexOf(option) != idle_range) {
+                idle_range = plist_idle_option.indexOf(option)
+            }
+        }
+        function switch_idle_prev() {
+            if(idle_range > 0){
+                idle_range -= 1
+                switch_idle(plist_idle_option[idle_range])
+            }
+        }
+        function switch_idle_next() {
+            if(idle_range < plist_idle_option.length - 1){
+                idle_range += 1
+                switch_idle(plist_idle_option[idle_range])
+            }
+        }
+
+        plist_bhv_prev.addEventListener("click",switch_bhv_prev)
+        plist_bhv_next.addEventListener("click",switch_bhv_next)
+
+        plist_idle_prev.addEventListener("click",switch_idle_prev)
+        plist_idle_next.addEventListener("click",switch_idle_next)
+        
+        
+
+        async function plist_promise() {
+            try {
+                const rd_sync = random_int(0,plist_vl.length)
+                
+                if(currentAudio.ended && plist_bhv.type == plist_option[0] && plist_vl[0] != undefined){
+                    for(data of pathList){
+                        for(let k = 0; k < data[1].length; ++k){
+                            if(`${data[0]}/${data[1][k]}` == `${data[0]}/${plist_vl[0]}`){
+                                    // preload_auto()
+                                    sd_wrapper.children[0].children[0].preload = "auto"
+
+                                    initialize_list(plist_vl[0],data[0])
+                                    await audio_play()
+                                    display_title()
+                                    await display_icon(plist_vl[0],data[0])
+                                    display_media()
+                                    shift_playlist()
+                                    console.log("plist promise end")
+
+                                    return
+                            }
+                        }
+                    }
+                }
+                if(currentAudio.ended && plist_bhv.type == plist_option[1] && plist_vl[rd_sync] != undefined){
+                    for(data of pathList){
+                        for(let k = 0; k < data[1].length; ++k){
+                            if(`${data[0]}/${data[1][k]}` == `${data[0]}/${plist_vl[rd_sync]}`){
+                                // preload_auto()
+                                sd_wrapper.children[rd_sync].children[0].preload = "auto"
+
+                                initialize_list(plist_vl[rd_sync],data[0])
+                                await audio_play()
+                                display_title()
+                                await display_icon(plist_vl[rd_sync],data[0])
+                                display_media()
+                                splice_playlist(rd_sync)
+                                console.log("plist_random promise end")
+
+                                return
+                            }
+                        }
+                    }
+                }
+                if(currentAudio.ended && plist_bhv.type == plist_option[2] && plist_vl[0] != undefined){
+                    for(data of pathList){
+                        for(let k = 0; k < data[1].length; ++k){
+                            if(`${data[0]}/${data[1][k]}` == `${data[0]}/${plist_vl[plist_vl.length - 1]}`){
+                                    // preload_auto()
+                                    sd_wrapper.children[0].children[0].preload = "auto"
+
+                                    initialize_list(plist_vl[plist_vl.length - 1],data[0])
+                                    await audio_play()
+                                    display_title()
+                                    await display_icon(plist_vl[plist_vl.length - 1],data[0])
+                                    display_media()
+                                    splice_playlist(plist_vl.length - 1)
+                                    console.log("plist promise end")
+
+                                    return
+                            }
+                        }
+                    }
+                }
+            } catch (err){
+
+            }
+            try {
+                const rd_sync = random_int(0,pathList.length)
+                
+                if(currentAudio.ended && plist_idle.type == plist_idle_option[1] && plist_vl.length == 0) {
+                    for(data of pathList){
+                        for(let k = 0; k < data[1].length; ++k){
+                            //copy this code : currentAudio.currentSrc.split("/").slice(0,currentAudio.currentSrc.split("/").length - 1).join("/")
+
+                            // console.log(currentAudio.currentSrc.split("/")[currentAudio.currentSrc.split("/").length - 2],currentAudio.currentSrc.split("/").slice(0,currentAudio.currentSrc.split("/").length - 1).join("/"))
+
+                            console.log("time's repeated")
+                        
+                            if(`${data[0]}/${data[1][k]}` == `${data[0]}/${currentPlay}` && currentAudio.currentSrc.split("/")[currentAudio.currentSrc.split("/").length - 2] == data[0] && data.length != k){
+
+                                initialize_list(data[1][k + 1],data[0])
+                                await audio_play()
+                                display_title()
+                                await display_icon(data[1][k + 1],data[0])
+                                display_media()
+
+                                return
+                            } 
+                            else if(`${data[0]}/${data[1][k]}` == `${data[0]}/${currentPlay}` && currentAudio.currentSrc.split("/").slice(0,currentAudio.currentSrc.split("/").length - 1).join("/") == data[0] && data.length != k){
+
+                                initialize_list(data[1][k + 1],data[0])
+                                await audio_play()
+                                display_title()
+                                await display_icon(data[1][k + 1],data[0])
+                                display_media()
+
+                                return
+                            }
+                            
+                            // else if(`${data[0]}/${data[1][k]}` == `${data[0]}/${currentPlay}` && data.length == k) {
+
+                            //     initialize_list(pathList[rd_sync][1][random_int(0,pathList[rd_sync][1].length)],pathList[rd_sync][0])
+                            //     await audio_play()
+                            //     display_title()
+                            //     await display_icon(pathList[rd_sync][1][random_int(0,pathList[rd_sync][1].length)],pathList[rd_sync][0])
+                            //     display_media()
+
+                            //     return
+                            // }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        setInterval(() => {
+            plist_promise()
+        }, 1000)
+        
+        function manifest_lastplayed(caption = "Last Played") {
+
+            const get_recent = JSON.parse(localStorage.getItem("recent"))
+            if(!JSON.parse(localStorage.getItem("recent"))) return
+
+            add_ctr_h(caption)
+            
+            const ctr_lists = document.createElement("div")
+            ctr_lists.setAttribute("class","ctr-lists")
+
+            const body = document.body
+            for(bchild of body.children){
+                if(bchild.getAttribute("class") == "ctr-wrapper"){
+                    get_recent.forEach((f,i) => {
+
+                        const ctr_list = document.createElement("div")
+                        ctr_list.setAttribute("class","ctr-list")
+            
+                        const ctr_vlist = document.createElement("video")
+                        ctr_vlist.setAttribute("class","ctr-vlist")
+                        ctr_vlist.setAttribute("poster","school_girl.png")
+                        ctr_vlist.currentTime = 10
+                        ctr_vlist.volume = .6
+            
+                        const plist_add = document.createElement("div")
+                        plist_add.setAttribute("class","plist-add")
+                        plist_add.textContent = "+"
+                        if(innerWidth <= 400){
+                            plist_add.style.transform = ""
+                        }
+            
+                        ctr_list.appendChild(ctr_vlist)
+                        ctr_list.appendChild(plist_add)
+                        //find ctr-lists 
+                        ctr_lists.appendChild(ctr_list)
+                        bchild.appendChild(ctr_lists)
+                        
+                        ctr_vlist.addEventListener("click",() => {
+                            ctrPlay(f[1],f[0])
+                        })
+                        plist_add.addEventListener("click",() => {
+                            add_playlist(f[1],f[0])
+                        })  
+                        function ctr_pointerover() {
+                            if(innerWidth <= 400){
+                                volume_(audio_volume * .4)
+                                ctr_vlist.volume = audio_volume * .6
+
+                                ctr_vlist.play()
+                            }
+                            else {
+                                volume_(audio_volume * .4)
+                                ctr_vlist.volume = audio_volume * .6
+
+                                ctr_list.style.boxShadow = "4px 4px 4px rgb(180, 184, 227), -4px -4px 4px rgb(180, 184, 227),4px -4px 4px rgb(180, 184, 227),-4px 4px 4px rgb(180, 184, 227)"
+                                ctr_list.style.transform = "scale(1.2)"
+
+                                ctr_vlist.play()
+                            }
+                        }
+                        function ctr_pointerleave() {
+                            if(innerWidth <= 400){
+                                volume_(audio_volume)
+
+                                ctr_vlist.pause()
+                                ctr_vlist.currentTime = 10
+                            }
+                            else {
+                                volume_(audio_volume)
+
+                                ctr_list.style.boxShadow = ""
+                                ctr_list.style.transform = ""
+                                
+                                ctr_vlist.pause()
+                                ctr_vlist.currentTime = 10
+                            }
+                        }
+                        function ctr_screen_out() {
+                            ctr_list.style.boxShadow = ""
+                            ctr_list.style.transform = ""
+                            
+                            // ctr_vlist.pause()
+                            ctr_vlist.currentTime = 10
+                        }
+                        ctr_list.addEventListener("pointerover",() => {
+                            ctr_pointerover()
+                        })
+                        ctr_list.addEventListener("pointerleave",() => {
+                            ctr_pointerleave()
+                        })
+                        const ctr_list_observer = new IntersectionObserver(entries => {
+                            entries.forEach(entry => {
+                                entry.target.classList.toggle("manifest-ctr-list",entry.isIntersecting)
+                            })
+                        })
+                        ctr_list_observer.observe(ctr_list)
+
+                        const ctr_vlist_observer = new IntersectionObserver(entries => {
+                            entries.forEach(entry => {
+                                if(!entry.isIntersecting){
+                                    entry.target.preload = "none"
+                                }
+                                else {
+                                    entry.target.preload = "auto"
+                                    ctr_screen_out()
+                                }
+                                entry.target.src = `${f[0]}/${f[1]}`
+                            })
+                        })
+                        ctr_vlist_observer.observe(ctr_vlist)
+                    })
+                }
+            }
+        }
+        function add_lastplayed(list,path) {
+            for(i of lastplayed_lists){
+                if(lastplayed_lists.length === 0) {
+                    break
+                }
+                else if(i[0] == path && i[1] == list) return
+            }
+            lastplayed_lists.push([path,list])
+            localStorage.setItem("recent",JSON.stringify(lastplayed_lists))
+        }
+
+        // function manifest_lastplayed_playlist() {
+        //     const get_playlist = JSON.parse(localStorage.getItem("lastplayed_playlist"))
+        //     for(i of get_playlist){
+        //         for(data of pathList){
+        //             for(let k = 0; k < data[1].length; ++k){
+        //                 if(`${data[0]}/${data[1][k]}` == `${data[0]}/${i}`){
+        //                     add_playlist(i,data[0])
+        //                 }
+        //             }
+        //         }
+
+        //     }
+        // }
+
+        // function add_lastplayed_playlist() {
+        //     localStorage.setItem("lastplayed_playlist",JSON.stringify(plist_vl))
+        // }
+
+        function add_ctr_lists(lists,path = "") {
+            pathList.push([path,lists])
+
+            const ctr_lists = document.createElement("div")
+            ctr_lists.setAttribute("class","ctr-lists")
+
+            const body = document.body
+            for(bchild of body.children){
+                if(bchild.getAttribute("class") == "ctr-wrapper"){
+                    lists.forEach((list,i) => {
+
+                        const ctr_list = document.createElement("div")
+                        ctr_list.setAttribute("class","ctr-list")
+            
+                        const ctr_vlist = document.createElement("video")
+                        ctr_vlist.setAttribute("class","ctr-vlist")
+                        ctr_vlist.setAttribute("poster","school_girl.png")
+                        ctr_vlist.currentTime = 10
+                        ctr_vlist.volume = .6
+                        // ctr_vlist.src = `${path}/${list}`
+                        // ctr_vlist.preload = "auto"
+                        // ctr_vlist.muted = true
+            
+                        const plist_add = document.createElement("div")
+                        plist_add.setAttribute("class","plist-add")
+                        plist_add.textContent = "+"
+                        if(innerWidth <= 400){
+                            plist_add.style.transform = ""
+                        }
+            
+                        ctr_list.appendChild(ctr_vlist)
+                        ctr_list.appendChild(plist_add)
+                        //find ctr-lists 
+                        ctr_lists.appendChild(ctr_list)
+                        bchild.appendChild(ctr_lists)
+                        
+                        ctr_vlist.addEventListener("click",() => {
+                            ctrPlay(list,path)
+                        })
+                        plist_add.addEventListener("click",() => {
+                            add_playlist(list,path)
+                        })  
+                        function ctr_pointerover() {
+                            if(innerWidth <= 400){
+                                volume_(audio_volume * .4)
+                                ctr_vlist.volume = audio_volume * .6
+
+                                ctr_vlist.play()
+                            }
+                            else {
+                                volume_(audio_volume * .4)
+                                ctr_vlist.volume = audio_volume * .6
+
+                                ctr_list.style.boxShadow = "4px 4px 4px rgb(180, 184, 227), -4px -4px 4px rgb(180, 184, 227),4px -4px 4px rgb(180, 184, 227),-4px 4px 4px rgb(180, 184, 227)"
+                                ctr_list.style.transform = "scale(1.2)"
+
+                                ctr_vlist.play()
+                            }
+                        }
+                        function ctr_pointerleave() {
+                            if(innerWidth <= 400){
+                                volume_(audio_volume)
+
+                                ctr_vlist.pause()
+                                ctr_vlist.currentTime = 10
+                            }
+                            else {
+                                volume_(audio_volume)
+
+                                ctr_list.style.boxShadow = ""
+                                ctr_list.style.transform = ""
+                                
+                                ctr_vlist.pause()
+                                ctr_vlist.currentTime = 10
+                            }
+                        }
+                        function ctr_screen_out() {
+                            ctr_list.style.boxShadow = ""
+                            ctr_list.style.transform = ""
+                            
+                            // ctr_vlist.pause()
+                            ctr_vlist.currentTime = 10
+                        }
+                        ctr_list.addEventListener("pointerover",() => {
+                            ctr_pointerover()
+                        })
+                        ctr_list.addEventListener("pointerleave",() => {
+                            ctr_pointerleave()
+                        })
+                        const ctr_list_observer = new IntersectionObserver(entries => {
+                            entries.forEach(entry => {
+                                entry.target.classList.toggle("manifest-ctr-list",entry.isIntersecting)
+                            })
+                        })
+                        ctr_list_observer.observe(ctr_list)
+
+                        const ctr_vlist_observer = new IntersectionObserver(entries => {
+                            entries.forEach(entry => {
+                                if(!entry.isIntersecting){
+                                    entry.target.preload = "none"
+                                }
+                                else {
+                                    entry.target.preload = "auto"
+                                    ctr_screen_out()
+                                }
+                                entry.target.src = `${path}/${list}`
+                            })
+                        })
+                        ctr_vlist_observer.observe(ctr_vlist)
+                    })
+                }
+                if(bchild.getAttribute("class") == "fl-wrapper"){
+                    lists.forEach((list,i) => {
+                        const fl_list = document.createElement("div")
+                        fl_list.setAttribute("class","fl-list")
+
+                        const fl_icon_ctr = document.createElement("div")
+                        fl_icon_ctr.setAttribute("class","fl-icon-ctr")
+
+                        const fl_option = document.createElement("div")
+                        fl_option.setAttribute("class","fl-option")
+                        fl_option.textContent = "|>"
+
+                        //media here
+                        const fl_icon = document.createElement("video")
+                        fl_icon.setAttribute("class","fl-icon")
+                        fl_icon.setAttribute("poster","./school_girl.png")
+                        fl_icon.currentTime = 10
+
+                        const fl_title = document.createElement("div")
+                        fl_title.setAttribute("class","fl-title")
+                        fl_title.textContent = `${list}`
+
+                        fl_icon_ctr.appendChild(fl_icon)
+                        fl_list.appendChild(fl_icon_ctr)
+                        fl_list.appendChild(fl_title)
+                        fl_list.appendChild(fl_option)
+
+                        bchild.appendChild(fl_list)
+
+                        fl_option.addEventListener("click",() => {
+                            ctrPlay(list,path)
+                        })
+                        fl_icon_ctr.addEventListener("click",() => {
+                            add_playlist(list,path)
+                        })
+
+                        function fl_screen_out() {
+                            fl_icon.currentTime = 10
+                        }
+
+                        const fl_ilist_observer = new IntersectionObserver(entries => {
+                            entries.forEach(entry => {
+                                if(!entry.isIntersecting){
+                                    entry.target.preload = "none"
+                                }
+                                else {
+                                    entry.target.preload = "auto"
+                                    fl_screen_out()
+                                }
+                                entry.target.src = `${path}/${list}`
+                            })
+                        })
+                        fl_ilist_observer.observe(fl_icon)
+                    })
+                }
+            }
+        }
+        function add_ctr_h(path){
+            const ctr_h = document.createElement("div")
+            ctr_h.setAttribute("class","ctr-h")
+            ctr_h.textContent = path
+
+            const body = document.body
+            for(bchild of body.children){
+                if(bchild.getAttribute("class") == "ctr-wrapper"){
+                    bchild.appendChild(ctr_h)
+                }
+            }
+        }
+        function add_filler() {
+            const filler = document.createElement("div")
+            filler.setAttribute("class","filler")
+
+            const body = document.body
+            for(bchild of body.children){
+                if(bchild.getAttribute("class") == "ctr-wrapper"){
+                    bchild.appendChild(filler)
+                }
+            }
+        }
+        function add_banner(file_path,obj_pos_x,obj_pos_y) {
+            const banner = document.createElement("div")
+            banner.setAttribute("class","banner")
+
+            const banner_list = document.createElement("img")
+            banner_list.setAttribute("class","banner-list")
+            banner_list.src = file_path.toString()
+            if((parseFloat(obj_pos_x) && parseFloat(obj_pos_y))){
+                const multiplier = 100
+                banner_list.style.objectPosition = `${parseFloat(obj_pos_x * multiplier)}% ${parseFloat(obj_pos_y * multiplier)}% `
+            }
+            
+            banner.appendChild(banner_list)
+
+            const body = document.body
+            for(bchild of body.children){
+                if(bchild.getAttribute("class") == "ctr-wrapper"){
+                    bchild.appendChild(banner)
+                }
+            }
+        }
+        function ctr_template_scroller(lists,path,caption) {
+            if(!caption) caption = path
+            add_ctr_h(caption)
+            add_ctr_lists(lists,path)
+        }
+
+        function add_playlist(list,path) {
+            plist_vl.push(list)
+
+            const plist = document.createElement("div")
+            plist.setAttribute("class","playlist")
+
+            const plist_ilist = document.createElement("video")
+            plist_ilist.setAttribute("class","playlist-icon")
+            plist_ilist.setAttribute("poster","school_girl.png")
+            plist_ilist.currentTime = 10
+            // plist_ilist.src = `${path}/${list}`
+            const plist_holder = document.createElement("div")
+            plist_holder.setAttribute("class","playlist-holder")
+
+            const plist_title = document.createElement("div")
+            plist_title.setAttribute("class","playlist-title")
+            plist_title.textContent = list
+            
+            plist.appendChild(plist_ilist)
+            plist.appendChild(plist_holder)
+            plist_holder.appendChild(plist_title)
+            sd_wrapper.appendChild(plist)
+
+            function playlist_screen_out() {
+                plist_ilist.currentTime = 10
+            }
+            //bug 
+            const plist_ilist_observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if(!entry.isIntersecting){
+                        entry.target.preload = "none"
+                    }
+                    else if(entry.isIntersecting) {
+                        entry.target.preload = "auto"
+                        playlist_screen_out()
+                    }
+                    entry.target.src = `${path}/${list}`
+                })
+            })
+            plist_ilist_observer.observe(plist_ilist)
+        }
+        function shift_playlist() {
+            plist_vl.shift()
+            sd_wrapper.children[0].remove()
+        }
+        function splice_playlist(sp_plist) {
+            plist_vl.splice(sp_plist,1)
+            sd_wrapper.children[sp_plist].remove()
+        }
+
+        function ctrPlay(list,path) {
+            if(list == currentPlay && !currentAudio.paused) return
+            else if(list == currentPlay && currentAudio.paused){
+                audio_play()
+            }
+            else {
+                initialize_list(list,path)
+                audio_status()
+                display_title()
+                display_icon(list,path)
+                display_media()
+            }
+        }
+
+        function goAt(sec){
+            currentAudio.currentTime = sec
+            media.currentTime = sec
+        }
+
+        function initialize_list(list,path) {
+            add_lastplayed(list,path)
+            currentPlay = list
+            currentAudio.src = `${path}/${list}`
+            media.src = `${path}/${list}`
+        }
+
+        //audio_controller
+        function audio_play() {
+            return new Promise((resolved,rejected) => {
+                try {
+                    if(sd_wrapper.children[0].children[0].readyState > 1){
+
+                        curr_player.textContent = "| |"
+                        currentAudio.play()
+                        media.play()
+                        console.log("audio done")
+                        resolved()
+                    }
+                    else {
+                        curr_player.textContent = "| |"
+                        currentAudio.play()
+                        media.play()
+                        console.log("audio done")
+                        resolved()
+                    }
+                } catch(err){
+                        curr_player.textContent = "| |"
+                        currentAudio.play()
+                        media.play()
+                        console.log("audio done")
+                        resolved()
+                }
+            })
+        }
+        function audio_pause() {
+            curr_player.textContent = ">"
+            currentAudio.pause()
+            media.pause()
+        }
+        //audio_status
+        function audio_status() {
+            if(currentPlay == undefined || null) return
+            if(currentAudio.paused){
+                audio_play()
+            } else {
+                audio_pause()
+            }
+        }
+
+        //display
+        function display_title(file_name){
+            title.textContent = currentPlay
+        }
+        function display_icon(icon,path){
+            return new Promise((resolved,rejected) => {
+                try {
+                    if(sd_wrapper.children[0].children[0].readyState > 1){
+                        curr_icon.src = `${path}/${icon}`
+                        curr_icon.play()
+                        curr_icon.muted = true
+                        setTimeout(() => {
+                            curr_icon.currentTime = 10
+                            curr_icon.pause()
+                            console.log("icon done")
+                            resolved()
+                        }, 200)
+                    }
+                    else {
+                        curr_icon.src = `${path}/${icon}`
+                        curr_icon.play()
+                        curr_icon.muted = true
+                        setTimeout(() => {
+                            curr_icon.currentTime = 10
+                            curr_icon.pause()
+                            console.log("icon done")
+                            resolved()
+                        }, 200)
+                    }
+                } catch (err){
+                    curr_icon.src = `${path}/${icon}`
+                    curr_icon.play()
+                    curr_icon.muted = true
+                    setTimeout(() => {
+                        curr_icon.currentTime = 10
+                        curr_icon.pause()
+                        console.log("icon done")
+                        resolved()
+                    }, 200);
+                }
+            })
+        }
+        function display_media(list) {
+            media.muted = true
+        }
+        function thumb_status() {
+            
+        }
+        //etc
+        function random_int(min,max) {
+            return Math.floor(Math.random() * (max - min)) + min
+        }
+        let sd_sw = true
+        function sd_switch() {
+            if(sd_sw){
+                // sd_pg.style.right = 0
+                sd_sw = false
+                sd_btn.textContent = "X"
+                sd_btn.style.animation = "sd-btn .5s"
+                sd_pg.style.animation = "sd_out .5s forwards"
+                sd_view.style.display = "flex"
+                sd_opt_trig.style.display = "flex"
+            }
+            else {
+                // sd_pg.style.right = "clamp(-100vw,-40vw,-300px)"
+                sd_sw = true
+                sd_btn.textContent = "☰"
+                sd_btn.style.animation = "sd-btn .5s"
+                sd_pg.style.animation = "sd_in .5s forwards"
+                sd_view.style.display = "none"
+                sd_opt_trig.style.display = "none"
+            }
+        }
+        let view_md = true
+        function view_mode() {
+            if(view_md){
+                ctr_wrapper.style.display = "none"
+                fl_wrapper.style.display = "block"
+                view_md = false
+            }
+            else {
+                ctr_wrapper.style.display = "block"
+                fl_wrapper.style.display = "none"
+                view_md = true
+            }
+        }
+        let view_opt = true
+        function view_option() {
+            if(view_opt){
+                sd_wrapper.style.display = "none"
+                sd_option.style.display = "block"
+                view_opt = false
+            }
+            else {
+                sd_wrapper.style.display = "block"
+                sd_option.style.display = "none"
+                view_opt = true
+            }
+        }
+        function volume_(amnt = 1) {
+            currentAudio.volume = amnt
+        }
+        function volume_change(amnt = 1) {
+            volume_(amnt)
+            audio_volume = amnt
+        }
+
+
+        // range.addEventListener("timeupdate",thumb_status)
+        curr_player.addEventListener("click",audio_status)
+        sd_btn.addEventListener("click",sd_switch)
+        sd_view.addEventListener("click",view_mode)
+        sd_opt_trig.addEventListener("click",view_option)
+
+        // sd_switch()
+        view_option()
+
+        //still optional
+        sd_search.addEventListener("keyup",(e) => {
+            const vlist = document.querySelectorAll(".ctr-vlist")
+            const fl_icon = document.querySelectorAll(".fl-icon")
+            for(i of vlist){
+                curr_src = i.currentSrc
+                try {
+                    if(decodeURI(curr_src.split("/")[curr_src.split("/").length - 1]).trim().toLowerCase().includes(e.target.value.trim().toLowerCase())){
+                        i.parentElement.style.display = "flex"
+                    }
+                    else {
+                        i.parentElement.style.display = "none"
+                    }
+                } catch(err){
+                    if(curr_src.split("/")[curr_src.split("/").length - 1].trim().toLowerCase().includes(e.target.value.trim().toLowerCase())){
+                        i.parentElement.style.display = "flex"
+                    }
+                    else {
+                        i.parentElement.style.display = "none"
+                    }
+                }
+            }
+            for(i of fl_icon){
+                curr_src = i.currentSrc
+                try {
+                    if(decodeURI(curr_src.split("/")[curr_src.split("/").length - 1]).trim().toLowerCase().includes(e.target.value.trim().toLowerCase())){
+                        i.parentElement.parentElement.style.display = "flex"
+                    }
+                    else {
+                        i.parentElement.parentElement.style.display = "none"
+                    }
+                } catch(err){
+                    if(curr_src.split("/")[curr_src.split("/").length - 1].trim().toLowerCase().includes(e.target.value.trim().toLowerCase())){
+                        i.parentElement.parentElement.style.display = "flex"
+                    }
+                    else {
+                        i.parentElement.parentElement.style.display = "none"
+                    }
+                }
+            }
+        })
+        function ripple_effect(e) {
+            const ripple = document.createElement("span")
+            ripple.setAttribute("class","ripple-effect")
+            ripple.style.top = `${e.clientY}px`
+            ripple.style.left = `${e.clientX}px`
+            ripple.style.background = `rgba(${random_int(0,255)},${random_int(0,255)},${random_int(0,255)},.1)`
+            ripple.style.animation = "ripple-effect 1s ease"
+
+            const body = document.body
+            body.appendChild(ripple)
+            setTimeout(() => {
+                ripple.remove()
+            }, 1000);
+        }
+        window.addEventListener("click",(e) => {
+            ripple_effect(e)
+        })
+        window.addEventListener("keyup",(e) => {
+            if(e.keyCode == "32"){
+                audio_status()
+            }
+            if(e.keyCode == "37"){
+                goAt(currentAudio.currentTime - 10)
+            }
+            if(e.keyCode == "39"){
+                goAt(currentAudio.currentTime + 10)
+            }
+            if(e.keyCode == "73") {
+                sd_switch()
+            }
+        })
+
+        add_banner("./banner/628286.webp",".5",".7")
+        add_filler()
+
+        manifest_lastplayed()
