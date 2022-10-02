@@ -11,6 +11,14 @@ const fl_wrapper = document.querySelector(".fl-wrapper")
 
 const body = document.body
 
+function randint(min,max) {
+    return Math.floor(Math.random() * (max - min)) + min 
+}
+
+const internet_status = (() => {
+    // still nothing here
+})()
+
 const manifest_option_state = (() => {
     let state = true
     return () => {
@@ -75,16 +83,133 @@ var initializer = (function() {
     let recent_name = undefined
     let recent_path = undefined
 
-    const shifter = (path,name) => {
-        if(source_collection.audio().ended && holder != undefined) {
-            source_collection.play(path,name)
-            holder.shift()
-            track_holder.children[0].remove()
-        }
+    const create_controls = (next,prev,label_name,fun_name) => {
+
+        const track_controls_btn = document.createElement("div")
+        track_controls_btn.setAttribute("class","track-controls-btn")
+
+        const track_controls_btn_label = document.createElement("div")
+        track_controls_btn_label.setAttribute("class","track-controls-btn-label")
+        track_controls_btn_label.textContent = `${fun_name()} : ${label_name()}`
+
+        const track_controls_btn_prev = document.createElement("div")
+        track_controls_btn_prev.setAttribute("class","track-controls-btn-prev")
+        track_controls_btn_prev.textContent = "<|"
+
+        const track_controls_btn_next = document.createElement("div")
+        track_controls_btn_next.setAttribute("class","track-controls-btn-next")
+        track_controls_btn_next.textContent = "|>"
+        
+        track_controls_btn_prev.addEventListener("click",() => {
+            prev()
+            track_controls_btn_label.textContent = `${fun_name()} : ${label_name()}`
+        })
+        track_controls_btn_next.addEventListener("click",() => {
+            next()
+            track_controls_btn_label.textContent = `${fun_name()} : ${label_name()}`
+        })
+
+        track_controls.appendChild(track_controls_btn)
+        track_controls_btn.appendChild(track_controls_btn_label)
+        track_controls_btn.appendChild(track_controls_btn_prev)
+        track_controls_btn.appendChild(track_controls_btn_next)
+
     }
 
+    const track_mode = (() => {
+        let name = "mode"
+        let status = 0
+        let options = ["default","random","reverse"]
+
+        const shifter = () => {
+            const random = randint(0,holder.length)
+
+            if(source_collection.audio().ended && holder.length > 0 && status == 0) {
+                source_collection.play(holder[0][0],holder[0][1])
+                holder.shift()
+                track_holder.children[0].remove()
+            }
+            else if(source_collection.audio().ended && holder.length > 0 && status == 1){
+                source_collection.play(holder[random][0],holder[random][1])
+                holder.splice(random,1)
+                track_holder.children[random].remove()
+            }
+            else if(source_collection.audio().ended && holder.length > 0 && status == 2){
+                source_collection.play(holder[holder.length - 1][0],holder[holder.length - 1][1])
+                holder.splice(holder.length - 1,1)
+                track_holder.children[holder.length].remove()
+            }
+        }
+
+        const next = () => {
+            if(status > options.length - 2) return
+            status += 1
+        }
+        const prev = () => {
+            if(status < 1) return
+            status -= 1
+        }
+        const label_name = () => {
+            return options[status]
+        }
+        const fun_name = () => {
+            return name
+        }
+
+        const controls = create_controls(next,prev,label_name,fun_name)
+
+        return shifter
+
+    })()
+    
+    const idle_mode = (() => {
+        let name = "idle"
+        let status = 0
+        let options = ["none","default","random","reverse"]
+
+        const shifter = () => {
+            const random = randint(0,collection.length)
+
+            const recent_source = collection.findIndex((c) => {
+                return c[0] == recent_path && c[1] == recent_name
+            })
+
+            if(source_collection.audio().ended && holder.length == 0 && status == 1) {
+                source_collection.play(collection[recent_source + 1][0],collection[recent_source + 1][1])
+            }
+            else if(source_collection.audio().ended && holder.length == 0 && status == 2){
+                source_collection.play(collection[random][0],collection[random][1])
+            }
+            else if(source_collection.audio().ended && holder.length == 0 && status == 3){
+                source_collection.play(collection[recent_source - 1][0],collection[recent_source - 1][1])
+            }
+        }
+
+        const next = () => {
+            if(status > options.length - 2) return
+            status += 1
+        }
+        const prev = () => {
+            if(status < 1) return
+            status -= 1
+        }
+        const label_name = () => {
+            return options[status]
+        }
+        const fun_name = () => {
+            return name
+        }
+
+        const controls = create_controls(next,prev,label_name,fun_name)
+
+        return shifter
+
+    })()
+
     setInterval(() => {
-        shifter(holder[0][0],holder[0][1])
+        // shifter(holder[0][0],holder[0][1])
+        track_mode()
+        idle_mode()
     }, 1000)
 
     return {
@@ -92,7 +217,7 @@ var initializer = (function() {
             recent_path = path
             recent_name = name
         },
-        name() {
+        recent_name() {
             return recent_name
         },
         recent_source() {
@@ -109,6 +234,16 @@ var initializer = (function() {
         },
         get_holder() {
             return holder
+        },
+        track_mode() {
+            return {
+                next() {
+                    track_mode.next()
+                },
+                prev() {
+                    track_mode.prev()
+                }
+            }
         }
     }
 })()
@@ -159,8 +294,8 @@ var source_collection = (function() {
             media.currentTime = seconds
         },
         async play(path,name) {
-            if(name == initializer.name() && !audio.paused) return
-            else if(name == initializer.name() && !audio.paused){
+            if(name == initializer.recent_name() && !audio.paused) return
+            else if(name == initializer.recent_name() && !audio.paused){
                 audio_play_state()
             }
             else {
