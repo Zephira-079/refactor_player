@@ -17,6 +17,7 @@ function randint(min,max) {
 
 const internet_status = (() => {
     // still nothing here
+    // i should place this at initializer
 })()
 
 const manifest_option_state = (() => {
@@ -148,7 +149,7 @@ var initializer = (function() {
     const track_mode = (() => {
         let name = "mode"
         let status = 0
-        let options = ["default","random","reverse"]
+        let options = ["default","random","reverse","repeat"]
 
         const shifter = () => {
             const random = randint(0,holder.length)
@@ -167,6 +168,9 @@ var initializer = (function() {
                 source_collection.play(holder[holder.length - 1][0],holder[holder.length - 1][1])
                 holder.splice(holder.length - 1,1)
                 track_holder.children[holder.length].remove()
+            }
+            if(source_collection.audio().ended && holder.length >= 0 && status == 3) {
+                source_collection.play(recent_path,recent_name)
             }
         }
 
@@ -194,7 +198,7 @@ var initializer = (function() {
     const idle_mode = (() => {
         let name = "idle"
         let status = 0
-        let options = ["none","default","random","reverse"]
+        let options = ["none","default","random","reverse","repeat"]
 
         const shifter = () => {
             const random = randint(0,collection.length)
@@ -211,6 +215,9 @@ var initializer = (function() {
             }
             else if(source_collection.audio().ended && holder.length == 0 && status == 3){
                 source_collection.play(collection[recent_source - 1][0],collection[recent_source - 1][1])
+            }
+            else if(source_collection.audio().ended && holder.length == 0 && status == 4) {
+                source_collection.play(recent_path,recent_name)
             }
         }
 
