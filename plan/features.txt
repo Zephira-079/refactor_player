@@ -1,6 +1,6 @@
 -/ default playlist : default
 -/ random playlist : play random music in playlist (splice)
-- random,default play : when there's no playlist anymore
+-/ random,default play : when there's no playlist anymore
 - override play : ignore third party sounds
 - store preference 
 - embed youtube video
