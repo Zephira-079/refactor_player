@@ -40,6 +40,7 @@ const manifest_option_state = (() => {
         }
     }
 })()
+
 const manifest_containers_state = (() => {
     let state = true
     return () => {
@@ -57,6 +58,7 @@ const manifest_containers_state = (() => {
         }
     }
 })()
+
 const manifest_track_controls_state = (() => {
     let state = true
 
@@ -82,6 +84,33 @@ var initializer = (function() {
 
     let recent_name = undefined
     let recent_path = undefined
+
+    const search = document.querySelector(".search")
+    search.addEventListener("keyup",(e) => {
+        const ctr_previews = document.querySelectorAll(".ctr-preview")
+        const fl_icons = document.querySelectorAll(".fl-icon")
+
+        ctr_previews.forEach((ctr_preview,index) => {
+            const ctr_preview_src = ctr_preview.src
+
+            if(ctr_preview_src.split("/")[ctr_preview_src.split("/").length - 1].trim().toLowerCase().includes(e.target.value.trim().toLowerCase())) {
+                ctr_preview.parentElement.style.display = "flex"
+            }
+            else {
+                ctr_preview.parentElement.style.display = "none"
+            }
+        })
+        fl_icons.forEach((fl_icon,index) => {
+            const fl_icon_src = fl_icon.src
+
+            if(fl_icon_src.split("/")[fl_icon_src.split("/").length - 1].trim().toLowerCase().includes(e.target.value.trim().toLowerCase())) {
+                fl_icon.parentElement.parentElement.style.display = "flex"
+            }
+            else {
+                fl_icon.parentElement.parentElement.style.display = "none"
+            }
+        })
+    })
 
     const create_controls = (next,prev,label_name,fun_name) => {
 
