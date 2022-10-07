@@ -260,6 +260,11 @@ var initializer = (function() {
             return [recent_path,recent_name]
         },
         collection_init(path,name) {
+            for(c of collection){
+                if(c[0] == path && c[1] == name) {
+                    return
+                }
+            }
             collection.push([path,name])
         },
         get_collection() {
@@ -338,6 +343,7 @@ var source_collection = (function() {
                 audio_play_state()
 
                 initializer.recent_init(path,name)
+                manifest_recent_tracks.only(path,name)
                 audio.src = `${path}/${name}`
                 media.src = `${path}/${name}`
 
@@ -695,6 +701,45 @@ manifest_track_controls.addEventListener("click",manifest_track_controls_state)
 
 add_banner("./banner/628286.webp")
 add_filler()
+
+const manifest_recent_tracks = (() => {
+    let holder_range = 10
+    const holder = []
+    const fetch_recent_tracks = JSON.parse(localStorage.getItem("recent_tracks"))
+
+    if(fetch_recent_tracks){
+        // the arrays from fetch_recent_tracks was implemeted/push into holder array 
+        for(f of fetch_recent_tracks){
+            holder.push(f)
+        }
+        add_ctr_header("recent_tracks")
+        const collection = create_collection()
+        for(h of holder){
+            collection.only(h[0],h[1])
+        }
+    }
+
+    return {
+        only(path,name) {
+            if(!(path && name)) return
+
+            holder.forEach((h,i) => {
+                if(h[0] == path && h[1] == name){
+                    holder.splice(i,1)
+                }
+            })
+            holder.splice(0,0,[path,name])
+
+            if(holder.length > holder_range) holder.splice(holder_range,holder.length - holder_range)
+            localStorage.setItem("recent_tracks",JSON.stringify(holder))
+            
+        },
+        range(value) {
+            holder_range = value
+        }
+    }
+})()
+
 add_ctr_header("online")
 const neon = create_collection()
 

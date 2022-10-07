@@ -10,3 +10,5 @@
 - add progress bar
 - add feature for query strings ?q="this+is+a+query"&t="20"
 - add feature if it's online or offline
+
+- add queue feature (music in group/collection and played one afther anoter)
