@@ -740,7 +740,7 @@ const manifest_recent_tracks = (() => {
     }
 })()
 
-add_ctr_header("online")
+add_ctr_header("KawaiiNeko Collection")
 const neon = create_collection()
 
 neon.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNeko",[
@@ -933,5 +933,5 @@ neon.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNeko",[
 "枕元にゴースト (feat nicamoq).mp3",
 "東京シュノーケル (feat nicamoq).mp3",
 "龍族幻想Dragon Raja OST - Music From My Room (10min).mp3",
-"高尾大毅 - Dont be afraid.mp3",
+"高尾大毅 - Dont be afraid.mp3"
     ])

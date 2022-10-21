@@ -56,10 +56,19 @@ function create_tab(text) {
     window.addEventListener("pointerup", () => {
         pointer_status = false
     })
+    return {
+        remove() {
+            tab.remove()
+        }
+    }
 }
 // if(innerWidth > 500) {
 //     create_tab("idle: none,random,reverse are not done yet!!!")
 // }
-// else {
-//     noticeMe("idle: none,random,reverse are not done yet!!!")
-// }
+
+//temporary 
+
+const greetings = create_tab("Nice to see you!!")
+setTimeout(() => {
+    greetings.remove()
+}, 5000);
