@@ -980,6 +980,5 @@ function notif(message) {
 }
 
 window.addEventListener("keydown",e => {
-    e.preventDefault()
-    if(e.keyCode == 83 && e.ctrlKey) skip()
+    if(e.keyCode == 65 && e.ctrlKey) skip()
 })
