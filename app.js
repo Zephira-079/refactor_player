@@ -960,3 +960,9 @@ neon.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNeko",[
 "高尾大毅 - Dont be afraid.mp3",
 "枕元にゴースト (feat nicamoq).mp3",
     ])
+
+//function temporary
+
+function skip() {
+    source_collection.goAt(source_collection.audio().duration)
+}
