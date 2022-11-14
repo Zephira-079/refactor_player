@@ -966,3 +966,7 @@ neon.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNeko",[
 function skip() {
     source_collection.goAt(source_collection.audio().duration)
 }
+
+window.addEventListener("keydown",e => {
+    if(e.keyCode == 83) skip()
+})
