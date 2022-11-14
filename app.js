@@ -341,6 +341,7 @@ var source_collection = (function() {
             }
             else {
                 audio_play_state()
+                notif(name)
 
                 initializer.recent_init(path,name)
                 manifest_recent_tracks.only(path,name)
@@ -965,6 +966,15 @@ neon.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNeko",[
 
 function skip() {
     source_collection.goAt(source_collection.audio().duration)
+}
+
+function notif(message) {
+    Notification.requestPermission().then(() => {
+        new Notification("Player",{
+            body: `currently playing: ${message}`,
+            tag: `player`
+        })
+    })
 }
 
 window.addEventListener("keydown",e => {
