@@ -341,6 +341,7 @@ var source_collection = (function() {
             }
             else {
                 audio_play_state()
+                // temporary notif
                 notif(name)
 
                 initializer.recent_init(path,name)
@@ -972,11 +973,13 @@ function notif(message) {
     Notification.requestPermission().then(() => {
         new Notification("Player",{
             body: `currently playing: ${message}`,
-            tag: `player`
+            tag: `player`,
+            icon: "school_girl.png"
         })
     })
 }
 
 window.addEventListener("keydown",e => {
-    if(e.keyCode == 83) skip()
+    e.preventDefault()
+    if(e.keyCode == 83 && e.ctrlKey) skip()
 })
