@@ -92,7 +92,7 @@ var initializer = (function() {
         const fl_icons = document.querySelectorAll(".fl-icon")
 
         ctr_previews.forEach((ctr_preview,index) => {
-            const ctr_preview_src = ctr_preview.src
+            const ctr_preview_src = encodeURI(ctr_preview.src)
 
             if(ctr_preview_src.split("/")[ctr_preview_src.split("/").length - 1].trim().toLowerCase().includes(e.target.value.trim().toLowerCase())) {
                 ctr_preview.parentElement.style.display = "flex"
@@ -102,7 +102,7 @@ var initializer = (function() {
             }
         })
         fl_icons.forEach((fl_icon,index) => {
-            const fl_icon_src = fl_icon.src
+            const fl_icon_src = encodeURI(fl_icon.src)
 
             if(fl_icon_src.split("/")[fl_icon_src.split("/").length - 1].trim().toLowerCase().includes(e.target.value.trim().toLowerCase())) {
                 fl_icon.parentElement.parentElement.style.display = "flex"
@@ -346,15 +346,15 @@ var source_collection = (function() {
 
                 initializer.recent_init(path,name)
                 manifest_recent_tracks.only(path,name)
-                audio.src = `${path}/${name}`
-                media.src = `${path}/${name}`
+                audio.src = encodeURI(`${path}/${name}`)
+                media.src = encodeURI(`${path}/${name}`)
 
                 await audio.play()
                 await media.play()
                 media.muted = true
 
                 title.textContent = `${name}`
-                audio_player_icon.src = `${path}/${name}`
+                audio_player_icon.src = encodeURI(`${path}/${name}`)
                 await audio_player_icon.play()
                 audio_player_icon.muted = true
                 setTimeout(() => {
@@ -403,7 +403,7 @@ var track_collection = (function() {
                         entry.target.preload = "auto"
                         track_icon.currentTime = icon_timestamp
                     }
-                    entry.target.src = `${path}/${name}`
+                    entry.target.src = encodeURI(`${path}/${name}`)
                 })
             })
             track_icon_observer.observe(track_icon)
@@ -417,7 +417,7 @@ function add_banner(file_path,obj_pos_x,obj_pos_y) {
 
     const banner_list = document.createElement("img")
     banner_list.setAttribute("class","banner-list")
-    banner_list.src = file_path.toString()
+    banner_list.src = encodeURI(file_path.toString())
     if((parseFloat(obj_pos_x) && parseFloat(obj_pos_y))){
         const multiplier = 100
         banner_list.style.objectPosition = `${parseFloat(obj_pos_x * multiplier)}% ${parseFloat(obj_pos_y * multiplier)}% `
@@ -484,7 +484,7 @@ function create_collection() {
                         entry.target.preload = "auto"
                         entry.target.currentTime = preview_timestamp
                     }
-                    entry.target.src = `${path}/${name}`
+                    entry.target.src = encodeURI(`${path}/${name}`)
                 })
             })
 
@@ -556,7 +556,7 @@ function create_collection() {
                         entry.target.preload = "auto"
                         fl_icon.currentTime = preview_timestamp
                     }
-                    entry.target.src = `${path}/${name}`
+                    entry.target.src = encodeURI(`${path}/${name}`)
                 })
             })
 
@@ -602,7 +602,7 @@ function create_collection() {
                             entry.target.preload = "auto"
                             entry.target.currentTime = preview_timestamp
                         }
-                        entry.target.src = `${path}/${name}`
+                        entry.target.src = encodeURI(`${path}/${name}`)
                     })
                 })
     
@@ -674,7 +674,7 @@ function create_collection() {
                             entry.target.preload = "auto"
                             fl_icon.currentTime = preview_timestamp
                         }
-                        entry.target.src = `${path}/${name}`
+                        entry.target.src = encodeURI(`${path}/${name}`)
                     })
                 })
     
@@ -743,9 +743,11 @@ const manifest_recent_tracks = (() => {
 })()
 
 add_ctr_header("KawaiiNeko Collection")
-const neon = create_collection()
+const kawaiineko = create_collection()
+add_ctr_header("KawaiiNyeow Collection")
+const kawaiinyeow = create_collection()
 
-neon.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNeko",[
+kawaiineko.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNeko",[
     "Achillea - アキレア.mp3",
 "Aice room (Nor) - DREAMY PLANET (featYUCe).mp3",
 "Android52 - Wrapped Up Remix.mp3",
@@ -963,6 +965,360 @@ neon.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNeko",[
 "枕元にゴースト (feat nicamoq).mp3",
     ])
 
+kawaiinyeow.many("https://rcph-smz.github.io/rcph_player_src/KawaiiNyeow",
+[
+    "%5BFULL%5DCentimeter_-_Kanojo%2C_Okarishimasu_Rent-a-Girlfriend_OP___the_peggies__piano_(1080p).mp3",
+    "%E3%80%90%E5%B7%A1%E9%9F%B3%E3%83%AB%E3%82%AB%E3%80%91___%E3%81%A9%E3%82%8A%E3%83%BC%E3%81%BF%E3%82%93%E3%83%81%E3%83%A5%E3%83%81%E3%83%A5___Dreamin_Chuchu___by_emon_%E3%80%90MEGURINE_LUKA%E3%80%91(720p).mp3",
+    "%E3%80%90Future_Bass%E3%80%91Amidst_-_Phantasy____%E2%99%AB%E2%99%AB%E2%99%AB(720p).mp3",
+    "%E3%80%904K%E3%80%91%E3%81%A9%E3%82%8A%E3%83%BC%E3%81%BF%E3%82%93%E3%83%81%E3%83%A5%E3%83%81%E3%83%A5___Dreamin_Chuchu_cover.%E9%B9%BF%E4%B9%83(1080p).mp3",
+    "%E3%80%90Genshin_Impact_MMD_4K_60FPS%E3%80%91Lumine___Keqing___Ganyu%E3%80%90%E8%8A%B1%E6%9C%88%E6%88%90%E5%8F%8C%E3%80%91%23PleaseReadDescription(720p).mp3",
+    "%E3%80%90Genshin_Impact_MMD_4K_60FPS%E3%80%91Kokomi%E3%80%90%E5%A4%9C%E6%98%8E%E7%8F%A0_%E3%82%A4%E3%82%A8%E3%83%9F%E3%83%B3%E3%82%B8%E3%83%A5_%E3%80%91_%23PleaseReadDescription(720p).mp3",
+    "%E3%81%BE%E3%81%98%E5%A8%98_-__%E3%82%A2%E3%82%A4%E3%83%AD%E3%83%8B_Irony_%E5%8F%8D%E8%AF%AD__%5BJapanese_Romaji_English%5D___Lyrics_Lyric_Video(720p).mp3",
+    "%E3%80%904K%E3%80%91%E3%81%A9%E3%82%8A%E3%83%BC%E3%81%BF%E3%82%93%E3%83%81%E3%83%A5%E3%83%81%E3%83%A5___Dreamin_Chuchu_cover.%E9%B9%BF%E4%B9%83(480p).mp3",
+    "%E3%81%8E%E3%82%85%E3%81%A3%E3%81%A8%E3%80%82__%E3%82%82%E3%81%95%E3%82%92%E3%80%82%E3%80%90Music_Video%E3%80%91(1080p).mp3",
+    "%E3%83%8F%E3%83%AD%EF%BC%8F%E3%83%8F%E3%83%AF%E3%83%A6_Hello_how_are_you___Cover_by_Nabi(1080p).mp3",
+    "%E3%82%B8%E3%82%A7%E3%83%AA%E3%83%BC%E3%83%95%E3%82%A3%E3%83%83%E3%82%B7%E3%83%A5__feat._%E3%83%AD%E3%83%BC%E3%83%A9%E3%83%BC%E3%82%AC%E3%83%BC%E3%83%AB_-Yunomi_Covered_by_Nabi(720p).mp3",
+    "2_23_AM___%E3%81%97%E3%82%83%E3%82%8D%E3%81%86(1080p).mp3",
+    "%E3%82%82%E3%81%90%E3%82%82%E3%81%90YUMMY%EF%BC%81__%E7%8C%AB%E5%8F%88%E3%81%8A%E3%81%8B%E3%82%86(1080p).mp3",
+    "Amatsuka_Uto_Stream_Intro(1080p).mp3",
+    "1st_Single_【_REDHEART_】(1080p)(1).mp3",
+    "%E5%B9%BD%E9%9C%8A%E6%9D%B1%E4%BA%AC___%E5%88%9D%E9%9F%B3%E3%83%9F%E3%82%AF(720p).mp3",
+    "Aire___Ujico__-_Spiral%E3%80%8CF_C_Virtual_Odyssey__Emotion%E3%80%8D_%5BFuture_Bass%5D(1080p).mp3",
+    "aori_-_ぱられループ_を歌ってみた_(Jeku_Remix)(1080p).mp3",
+    "Anime_Moan_Remix__Remastered(720p).mp3",
+    "Android_52_-_The_New_Shrimp_Groove(720p).mp3",
+    "Auburn_-_All_About_Him_(slowed_+_reverb)(720p).mp3",
+    "Azla_-_Flash(1080p).mp3",
+    "ayiko_-_Teichopsia_(ft._Shoko)(1080p).mp3",
+    "Beethoven_-_Für_Elise_(Klutch_Dubstep_Trap_Remix)(720p).mp3",
+    "ayiko_-_Teichopsia_(ft._Shoko)(720p).mp3",
+    "BEST_NIGHTCORE_✘_MASHUP_J-POP(1080p).mp3",
+    "Brandon_Liew_-_DREAMERS_(feat._TOFIE)(1080p).mp3",
+    "Brandon_Liew_-_DREAMERS_(feat._TOFIE)(720p).mp3",
+    "Brain_Power(1080p).mp3",
+    "Chiisana_Koi_no_Uta(1080p).mp3",
+    "Christmas_Song_-_N.A.M.E(1080p).mp3",
+    "Cloudier_-_A_Centimetre_Apart_(Systile_Remix)(1080p).mp3",
+    "BB_Yukus_-_Northern_Sky(1080p).mp3",
+    "Chiisana_Koi_no_Uta(720p).mp3",
+    "Colate_-_Good_Night_(Feat._Nanahira)_(Nor_Remix)(1080p).mp3",
+    "Colate_-_Dot_to_Dot(1080p).mp3",
+    "Couple_N_-_Sweet_Garden(1080p).mp3",
+    "Crazed_Bucket_-_Still_Lovely(1080p).mp3",
+    "damper_&_Devious_-_soda_street(1080p).mp3",
+    "Dankel_Rose_-_Blueberry's_Dreamy_Eyes(1080p).mp3",
+    "dark_cat_-_BUBBLE_TEA_(feat._juu_&_cinders)(720p).mp3",
+    "DJ_Noriken_-_Stargazer_Feat._YUC'e_「_Xignality_Remix_」(1080p).mp3",
+    "dark_cat_-_CRAZY_MILK(720p).mp3",
+    "Cold_Youth_-_Nearby(480p).mp3",
+    "DJ_Noriken_-_Stargazer_Feat._YUC'e_「_Xignality_Remix_」(360p).mp3",
+    "DoctorNoSense_-_Safe_to_Say(1080p).mp3",
+    "DJ_Noriken_-_スターゲイザ_(Stargazer)ー_feat._YUC'e_(PSYQUI_Remix)(1080p).mp3",
+    "DoctorNoSense_-_Safe_to_Say(720p).mp3",
+    "DoctorNoSense_-_Safe_to_Say_(Official_Audio)(1080p).mp3",
+    "Eli_Noir_–_Wonder_Why_(prod._Noden)_(Lyrics)_[CC](1080p).mp3",
+    "DoctorNoSense_-_Love_Me_Now(720p).mp3",
+    "Elliot_Hsu_-_夢のかたち_(feat._Yuca)(360p).mp3",
+    "eleline△_-_Koto_no_Town(1080p).mp3",
+    "Ferst_-_Sparkle_(feat._Nobelz)(1080p).mp3",
+    "excuse.mp3",
+    "EmoCosine_-_Step_to_Sky(480p).mp3",
+    "Ghostrifter_Official_-_Soaring(1080p).mp3",
+    "fuwuvi_-_Hyper_Neko(1080p)(1).mp3",
+    "glance_-_Epic_Score__w__nabil%21___noguchii_(480p).mp3",
+    "glance_-_Epic_Score__w__nabil%21___noguchii_(720p).mp3",
+    "Gotoubun_no_Hanayome_Opening_-_Gotoubun_no_Kimochi_Full_Version_(Color_Coded)_+_Lyrics(1080p)(1).mp3",
+    "Future_Cαke(720p).mp3",
+    "Future_Cαndy(1080p).mp3",
+    "Hanatan_→「_Yuuhi_Saka_」(1080p).mp3",
+    "greyl_-_MYC(720p).mp3",
+    "Hardwell_ft._Jake_Reese_-_Run_Wild_(HANAEL_Remix)(720p).mp3",
+    "Hazy_Skyscraper(1080p).mp3",
+    "Hatsune_Miku_-_OVER(720p).mp3",
+    "Hikanira_&_Mayuru_-_Baka!(1080p).mp3",
+    "HoneyComeBear_-_Natsuzora(ナツゾラ)(20XX_Remix)(1080p).mp3",
+    "HoneyComeBear_-_Natsuzora_(ナツゾラ)(1080p)(1).mp3",
+    "HoneyComeBear_-_Natsuzora_(20XX_Remix)(1080p).mp3",
+    "Hyp3rsleep_&_SoLush_-_Lovestruck(1080p).mp3",
+    "greyl_-_MYC(720p)(1).mp3",
+    "hyleo_-_Trigger_(feat._Such)(720p).mp3",
+    "Japanese_Acoustic_Song_•_Zen_Zen_Zense_-_(Cover_by._粉ミルク)__Lyrics_Video(1080p).mp3",
+    "Jotori_-_サイキ_(Saiki)(720p).mp3",
+    "Jotori_-_Summer_Rain(1080p).mp3",
+    "Hyp3rsleep_–_First_light(1080p).mp3",
+    "Kamaboko_-_Colorful(720p).mp3",
+    "Kamaboko_-_Colorful(720p)(1).mp3",
+    "Kanaria_-_KING_covered_by_amatsukauto_໒꒱·_ﾟ(1080p).mp3",
+    "Kana_Hanazawa_-_Renai_Circulation_(Lone_Alpha_Remix)(1080p).mp3",
+    "Kano_→「_Sentimental_Love_Heart_」(1080p).mp3",
+    "Kano_-_Dreamin_Chuchu_♡♡♡(1080p)(1).mp3",
+    "Kenneyon_-_Boba(1080p)(1).mp3",
+    "Kenneyon_&_NY~ON!_-_Espresso(1080p)(1).mp3",
+    "Kenneyon_-_Boba(1080p).mp3",
+    "Kenneyon_-_Citrus(1080p).mp3",
+    "Kenneyon_-_Taiko(1080p).mp3",
+    "Kagi_-_Daydream(1080p).mp3",
+    "Kirara_Magic_-_Chaos_Nya(720p).mp3",
+    "Kirara_Magic_-_Colors_(feat._Shion)(1080p).mp3",
+    "Kirara_Magic_-_Floating_Star_(feat._Shion)(720p).mp3",
+    "Kirara_Magic_-_Island(720p).mp3",
+    "kiino_-_lucky(720p).mp3",
+    "Kirara_Magic_-_Journey_(feat._Ugu)(1080p).mp3",
+    "Kodokushi_(VIP)(1080p).mp3",
+    "Kirara_Magic_-_Lovely_Daydream_♥_Kawaii_Future_Bass_♫(1080p).mp3",
+    "Kirara_Magic_-_Starlight(1080p).mp3",
+    "KOTONOHOUSE_-_Let's_go_boogie_[Reupload](360p).mp3",
+    "KUWAGO_-_In_Your_Heart(1080p).mp3",
+    "K_DA_-_MORE_ft._Madison_Beer%2C__G_I-DLE%2C_Lexie_Liu%2C_Jaira_Burns%2C_Seraphine__Official_Music_Video_(1080p).mp3",
+    "KUWAGO_-_Lucky_Girl(1080p).mp3",
+    "KUWAGO_-_In_Your_Heart(720p).mp3",
+    "Lokan_–_Antigravity(720p).mp3",
+    "Leat'eq_-_Tokyo_(Original)__Nya!_arigato(1080p).mp3",
+    "Lone_Alpha_-_Make_Up_Your_Mind_(feat._TOFIE)(1080p).mp3",
+    "Madeon_-_All_My_Friends_(Kagi_Remix)(720p).mp3",
+    "Louis_Vision_-_Chu_Chu_Chu_(feat._GUMI)(1080p).mp3",
+    "Manu_Lei_-_lil_fing(1080p).mp3",
+    "makinru_-_Farewell(1080p).mp3",
+    "LCwwww_-_Sleepy_Ahhh(720p).mp3",
+    "MEMODEMO_-_New_Sunshine(1080p).mp3",
+    "Michino_Timothy_Kimino_Kimochi(1080p).mp3",
+    "Mihka!_X_Kyoto_Black_–_Kodokushi_(孤独死)(720p).mp3",
+    "Mihka!_X_Kyoto_Black_–_Kodokushi_VIP_(孤独死)_[Future_Bass](720p).mp3",
+    "Manu_Lei_-_lil_fing(720p).mp3",
+    "Miruku_-_You_[Official_Audio](720p).mp3",
+    "mkhito_-_Bring_Me_Up(480p).mp3",
+    "Miraie_&_iMeiden_-_Heartseeker(1080p).mp3",
+    "Moe_House_-_Shibuya_moe_girl(720p).mp3",
+    "MojiX!_x_Elkuu_-_Minamo(720p).mp3",
+    "MØ_-_KAMIKAZE_(FUTURISM._Remix)(720p).mp3",
+    "NETNEGATIVE_-_Let's_go!_(_AkoMusic_Release_)(1080p).mp3",
+    "NETNEGATIVE_-_Sugar_Rush_(_AkoMusic_Release_)(1080p).mp3",
+    "Nightcore_-_Aishiteru_「_Wotamin_」(1080p).mp3",
+    "Nightcore_-_4℃_「_CHIHIRO_」(1080p).mp3",
+    "Nightcore_-_Asayake_Kimi_No_Uta「Kano」(1080p).mp3",
+    "Nightcore_-_BRAVE_「_8utterfly_Feat._CLIFF_EDGE_」(1080p).mp3",
+    "Nightcore_-_Baby_I_Love_You__「_TEE_」(1080p).mp3",
+    "Mtell_-_Paimon(1080p).mp3",
+    "Nightcore_-_Butter_Sugar_Cream_「_Tomggg_Feat._Tsvaci_」(1080p).mp3",
+    "Nightcore_-_Daisy_Blue_「_Kano_」(720p).mp3",
+    "Nightcore_-_Daisy_Blue_「_Kano_」(1080p).mp3",
+    "Nightcore_-_Dakedo,_Kimi_Shika_Mienakute..._「_8utterfly_Feat._Zawachin_」(1080p).mp3",
+    "Nightcore_-_Girl's_Talk_「_CHIHIRO_」(1080p).mp3",
+    "Nightcore_-_Demons_(Switching_Vocals)_-_(Lyrics)(1080p).mp3",
+    "Nightcore_-_Hello!_How_are_you__Lyrics(1080p).mp3",
+    "Nightcore_-_Girl's_Talk_「_CHIHIRO_」(360p)(1).mp3",
+    "Nightcore_-_Hello,_How_Are_You_「_Kano_」(720p).mp3",
+    "Nightcore_-_Ice_Cream_(Switching_Vocals)_-_(Lyrics)(1080p).mp3",
+    "Nightcore_-_In_My_Mind_(Remix)_-_(Lyrics)(1080p).mp3",
+    "Nightcore_-_Ima_wo_Kakeru_Shoujo_「_Kano_」(1080p)(1).mp3",
+    "Nightcore_-_Itsumo_Soba_de_「_KG_Feat._Maiko_Nakamura_」(720p).mp3",
+    "Nightcore_-_Lonely_「_CHIHIRO_」(1080p)(1).mp3",
+    "Nightcore_-_Kuroneko_「_Akagami_」(360p).mp3",
+    "Nightcore_-_Love_Letter_~Eien_no_Shiawase~_「_jyA-Me_」(1080p).mp3",
+    "Nightcore_-_LOVE_SONG%E3%80%8C_Yuka_Masaki____%E7%9C%9F%E5%B4%8E%E3%82%86%E3%81%8B_%E3%80%8D(1080p).mp3",
+    "Nightcore_-_Miss_U「_CHIHIRO_feat._ZANE_(three_NATION)_」(1080p).mp3",
+    "Nightcore_-_Mata_Futari_koi_o_Suru「Wotamin」(1080p).mp3",
+    "Nightcore_-_Nemurenai_Hodo_「_Yuka_Masaki_Feat._WISE__」(1080p)(1).mp3",
+    "Nightcore_-_Ghost_「_Kano_」(1080p).mp3",
+    "Nightcore_-_Nemurenai_Hodo_「_Yuka_Masaki_Feat._WISE__」(1080p).mp3",
+    "Nightcore_-_Nitamono_Doushi_「_Hiromi_」(1080p).mp3",
+    "Nightcore_-_Motto_Aishitakatta_「Yuka_Masaki」(1080p).mp3",
+    "Nightcore_-_Nothing_To_Say_~会いたいなんて言えない_I_Love_You~_「_8utterfly_」(1080p).mp3",
+    "Nightcore_-_Niwaka_Ame_「_Hanatan_」(1080p).mp3",
+    "Nightcore_-_Please_Dont_Say_You_Love_Me_-_(Lyrics)(1080p).mp3",
+    "Nightcore_-_Once_More_Again_~_Mou_Ichido_Dakishimete「_May_J_Feat._LGYankees_」(1080p).mp3",
+    "Nightcore_-_Precious_「_Yuna_Ito_」(1080p)(1).mp3",
+    "Nightcore_-_Pura_Pura_Lupa_(English_Version)_-_(Lyrics)(1080p).mp3",
+    "Nightcore_-_RESET_「_CHIHIRO_」(1080p).mp3",
+    "Nightcore_-_No_Friends_(Lyrics)(1080p).mp3",
+    "Nightcore_-_Reaper_-_(Lyrics)(1080p).mp3",
+    "Nightcore_-_Sad_Song_(Switching_Vocals)_-_(Lyrics)(1080p).mp3",
+    "Nightcore_-_Sayonara_Aishiteta「Saki_Kayama」(360p).mp3",
+    "Nightcore_-_Sasabune_「_YuRiCa_」(1080p).mp3",
+    "Nightcore_-_Sakura_no_Zenya_「_Kano_」(720p).mp3",
+    "Nightcore_-_Sayonara_My_Love「_Maiko_Nakamura_Feat._NERDHEAD_」(720p).mp3",
+    "Nightcore_-_Setsunakute_「_Da-iCE_」(720p).mp3",
+    "Nightcore_-_Sayonara_Kono_Natsu_Ni_「_Shota_Shimizu_」(1080p).mp3",
+    "Nightcore_-_Secret_Summer_「_NERDHEAD_Feat._Chihiro_」(1080p).mp3",
+    "Nightcore_-_Souzou_Forest_「_Kano_」(1080p).mp3",
+    "Nightcore_-_Shinpakusuu_♯0822_「_Akie_」(1080p).mp3",
+    "Nightcore_-_They_Don't_Know_About_Us_-_(Lyrics)(1080p).mp3",
+    "Nightcore_-_Uta_ni_Katachi_wa_Nai_Keredo_「_Hanatan_」(1080p).mp3",
+    "Nightcore_-_Waiting_For_Love_「_Maiko_Nakamura_Feat._Noa_」(720p).mp3",
+    "Nightcore_-_Thank_You_「_CHIHIRO_Feat_WISE_」(1080p).mp3",
+    "Nightcore_-_Way_Back_Home_(English_Version)__Lyrics(1080p).mp3",
+    "Nightcore_-_Why_Don't_You_Love_Me_(Switching_Vocals)(1080p).mp3",
+    "Nightcore_-_Why_「_Hiromi_Feat._Full_of_Harmony_」(720p).mp3",
+    "Nightcore_-_Yubiwa_to_Aikagi_「_Hazzie_Feat._Ai_RSP_」(1080p).mp3",
+    "Nightcore_-_we_can_do_this_all_night__Loli_Dance(1080p).mp3",
+    "Nightcore_-_Yume_Egao_「_Chata_」(1080p).mp3",
+    "Nightcore_-_Zurui_yo_._._._「_CHIHIRO_」(1080p).mp3",
+    "Nightcore_-_Zutto_Tonari_De.._「_jyA-Me_」(1080p).mp3",
+    "Nightcore_-_グッドナイトエヴリワン_中日羅字幕(1080p).mp3",
+    "Nightcore_-_____Ichibyou_Demo_SORA_x_Se(1080p).mp3",
+    "Nikoi0227_-_Wake_Up(1080p).mp3",
+    "Nightcore_–_Miss_You_More_(Lyrics)(1080p).mp3",
+    "Omoshiroebi_-_Mille_Feuille_(Orig._Stepic)(1080p).mp3",
+    "Nikoi0227_-_Sweetie_cocoa(1080p).mp3",
+    "Omoshiroebi_-_Sakura_Saku_Remix_(orig._Yunomi)(720p).mp3",
+    "Owl_City_-_Fireflies_(dark_cat_remix)(1080p).mp3",
+    "Owl_City_-_Fireflies_(Official_Video)(480p).mp3",
+    "Oceanus_-_Keep_A_Secret(1080p).mp3",
+    "owarin_-_late_for_school!(1080p).mp3",
+    "PIKASONIC_-_Friendship!_(Diona,_Qiqi_&_Klee)(1080p).mp3",
+    "PIKASONIC_-_Nation(1080p).mp3",
+    "PIKASONIC_-_Emptiness(1080p).mp3",
+    "PIKASONIC_-_Pets!_♡_Qiqi_&_Klee_Version(1080p).mp3",
+    "Pixel_Galaxy(1080p).mp3",
+    "PIKASONIC_-_Klee!(1080p).mp3",
+    "POI!!_Ohhh~(1080p).mp3",
+    "PLEEG_-_Peace(720p).mp3",
+    "Polykeeper_-_Restart_Chronicle_(feat._Hatsune_Miku)(720p).mp3",
+    "Pretender_-_Official_Hige_Dandism_(Cover_by._Harutya_&_Kobasolo)_Lyrics(1080p)(1).mp3",
+    "Polykeeper_-_Unconventional_(feat._Hatsune_Miku)(1080p).mp3",
+    "PSYQUI_-_Are_You_Kidding_Me__ft._Mami____Jpop_Future_Core(720p).mp3",
+    "PSYQUI_-_Education(720p).mp3",
+    "PSYQUI_-_don't_you_want_me_ft._Such(1080p).mp3",
+    "PSYQUI_-_Rainbow_Dream__ft._Mo%E2%88%80____Future_Core(720p).mp3",
+    "PSYQUI_-_Still_in_my_heart_feat._%E3%81%B7%E3%81%AB%E3%81%B7%E3%81%AB%E9%9B%BB%E6%A9%9F____Lyrics_%5BCC%5D(720p).mp3",
+    "Preddy_-_Xikio_(Full_version)(720p).mp3",
+    "PSYQUI_-_Your_Voice_So..._feat._Such_(YUKIYANAGI_Remix)(1080p).mp3",
+    "PSYQUI_-_Your_Voice_So...__ft._SUCH____Jpop_Kawaii_J-Core_2019(1080p).mp3",
+    "PSYQUI_-_Your_Voice_So..._Zekk___Full_Spec___Remix__Ft._SUCH____Future_Core(720p).mp3",
+    "PSYQUI_-_ヒステリックナイトガール_feat._Such_(android52_Edit)(720p).mp3",
+    "Rejection_-_Signal__ft._SUCH____Future_Core_2020(720p).mp3",
+    "PSYQUI_-_Your_Voice_So...__ft._SUCH____Jpop_Kawaii_J-Core_2019(720p).mp3",
+    "Rent-a-Girlfriend_-_Opening_Full『Centimeter』by_the_peggies(1080p).mp3",
+    "Pure_100%_&_KOTONOHOUSE_-_Girlfriend(720p).mp3",
+    "Roa_-_Little_Dream(1080p).mp3",
+    "Ruxxi_-_I_Mean_I_Love_You_VIP__w__Malcha_(720p).mp3",
+    "Sad_Puppy_-_Flamakae_Baby(1080p).mp3",
+    "SECRET;WEAPON【OFFICIAL】(1080p).mp3",
+    "Seina_-_Starlight_Wonder_(feat._Shion)(1080p).mp3",
+    "Shining_Lights_(feat._PSYQUI)(1080p).mp3",
+    "Rocket_Start_-_Alone(720p).mp3",
+    "Snail's_House_-_Butterscotch(1080p).mp3",
+    "Snail's_House_-_Chiffon(720p).mp3",
+    "Snail's_House_-_Chocolate_Island(1080p).mp3",
+    "Snail's_House_-_Hot_Milk(1080p).mp3",
+    "Snail's_House_-_Kokorotravel(720p).mp3",
+    "Snail's_House_-_Ma_Chouchoute_[Tasty_Release](1080p)(1).mp3",
+    "Snail's_House_-_Rainbow_Float(720p).mp3",
+    "Snail's_House_-_Pudding(720p).mp3",
+    "Snail's_House_-_Strawberry(1080p).mp3",
+    "Snail's_House_-_ラ・ム・ネ_(ra-mu-ne)(1080p).mp3",
+    "Snail's_House_-_ラ・ム・ネ_(ra-mu-ne)_(Lone_Alpha_Remix)(1080p).mp3",
+    "Shikimi_-_Uranus(1080p).mp3",
+    "Snail's_House___Pixel_Galaxy_Official_MV(720p).mp3",
+    "SoLush_-_Raspberry_Iced_Tea(1080p)(1).mp3",
+    "Snail's_House_–_Ma_Chouchoute(720p)(1).mp3",
+    "Stessie_-_Close_To_You(1080p).mp3",
+    "SoLush_-_Sweet_paradise(1080p).mp3",
+    "Still_in_my_heart_(feat._ぷにぷに電機)(1080p).mp3",
+    "SoLush_-_Fubu_Funk_!(1080p).mp3",
+    "succducc_-_me_&_u_[𝐬𝐥𝐨𝐰𝐞𝐝](720p).mp3",
+    "succducc_-_me_&_u_(the_sky_edit)_+_(maquia_edit)(720p).mp3",
+    "Summer_is_the_perfect_time_for_skirts~(1080p).mp3",
+    "Sylrica_-_Make_A_Wish!(1080p).mp3",
+    "Sylrica_-_Sweetie(1080p).mp3",
+    "Succducc_-_me_&_u(720p).mp3",
+    "Synthion_-_Cake_Pop(1080p)(1).mp3",
+    "Synthion_-_Konpeito_(Official_Audio)(720p).mp3",
+    "Systile_-_Artificial(1080p).mp3",
+    "Sylrica_-_Sweetie(720p).mp3",
+    "Systile_-_Love_Signals(1080p).mp3",
+    "Synthion_-_Twinkle_(Official_Audio)(720p).mp3",
+    "t+pazolite_-_Chrome_VOX_(Uncut_Edition)(720p).mp3",
+    "Teikyou_-_Deadly_Slot_Game(720p).mp3",
+    "t+pazolite_-_Oshama_Scramble!_(Uncut_Edition)(720p).mp3",
+    "Tomggg_(Cover._@Taiyoudayo___)_-_Butter_Sugar_Cream(480p).mp3",
+    "Tomggg_(Cover._@Taiyoudayo___)_-_Butter_Sugar_Cream(720p).mp3",
+    "Systile_-_Sugar_Circuit(1080p).mp3",
+    "Tsukachi_-_Together_Is_Better(720p).mp3",
+    "the_peggies「センチメートル」Music_Video(1080p).mp3",
+    "Ugumugu_-_Usagi_Ni_Datte_Randoseru(1080p).mp3",
+    "Viuk,_Setka_&_Love_Club_-_Tea_Groove_♪(720p).mp3",
+    "Xomu_-_Walpurgis_Night(720p).mp3",
+    "Ultrasonic_exported_0.mp3",
+    "Wave_Meow_&_Zentra_-_Cloud_Surfing(1080p).mp3",
+    "YOASOBI_-_%E5%A4%9C%E3%81%AB%E9%A7%86%E3%81%91%E3%82%8B___Yoru_ni_Kakeru__Lyric_Video_(1080p).mp3",
+    "YOASOBI「夜に駆ける」_Official_Music_Video(720p).mp3",
+    "Xomu_&_Justin_Klyvis_-_Setsuna_(Kirara_Magic_Remix)(1080p).mp3",
+    "Your_voice_so..._(Zekk's_'FULL_SPEC'_Remix)_(feat._Such)(720p).mp3",
+    "YUC'e_x_Snail's_House_-_Cosmic_Air_Ride(720p).mp3",
+    "YOASOBI_-_もう少しだけ_(DoctorNoSense_Remix)(720p).mp3",
+    "Yunomi_&_nicamoq_-_インドア系ならトラックメイカー_(ミカヅキBIGWAVE_Remix)(1080p).mp3",
+    "YUC_e_-_Future_Candy__Kaivaan_Remix_(720p).mp3",
+    "YUMMI_-_Starfall_(MoeTunes_Release)(1080p).mp3",
+    "Yunomi_&_nicamoq_–_インドア系ならトラックメイカー(720p).mp3",
+    "Yunomi_-_ジェリーフィッシュ_(feat._ローラーガール)(1080p).mp3",
+    "Yunomi_-_Aimai_Trip_(feat._桃箱_&_miko)(1080p).mp3",
+    "Yunomi_-_Shugorei_(守護霊)_feat._nicamoq_(Tecchi_Remix)(1080p).mp3",
+    "Yunomi_–_ゆのみっくにお茶して_(feat.nicamoq)_(Hibiki_Remix)(1080p).mp3",
+    "Zakku_x_Nakanojojo_-_Matcha_Love_(feat._アリガトユイナ)(1080p).mp3",
+    "Yunomi_-_Yumeiro_Parade_(Feat._Momobako_&_Miko)(720p).mp3",
+    "[MV]_Gang_Gang,_Kawaii!!_(DEMONDICE)_-_American_Saikoro_XFD(720p).mp3",
+    "[Blue_Archive]_Theme_109(720p).mp3",
+    "[MV]_REOL_-_drop_pop_candy(720p).mp3",
+    "[ORIGINAL]_REFLECT_-_Gawr_Gura(1080p).mp3",
+    "Yunomi_-_守護霊_(feat._nicamoq)(720p).mp3",
+    "[_Future_Bass_]_Stereoman_-_Hydrangea_(Original_Mix)(720p).mp3",
+    "[ORIGINAL_SONG]__失礼しますが、RIP♡__“Excuse_My_Rudeness,_But_Could_You_Please_RIP”_-_Calliope_Mori(1080p).mp3",
+    "[MV]_wannabe-_DEMONDICE(720p).mp3",
+    "❋「AS___Nightcore」__Sono_Koe_Kienaiyo___❋(720p).mp3",
+    "「Nightcore」→_Asayake_Kimi_No_Uta「Kano」(720p).mp3",
+    "「Nightcore」→_Aishiteru「Wotamin」(1080p).mp3",
+    "「Nightcore」→_A_Perfect_Sky「BONNIE_PINK」(360p).mp3",
+    "「Nightcore」→_Day_by_Day「Kano」(1080p).mp3",
+    "「Nightcore」→_Boku_no_Oto「Sukima_Switch」(1080p)(1).mp3",
+    "「Nightcore」→_Dear_Bride「西野カナ」(360p).mp3",
+    "‪(720p).mp3",
+    "「Nightcore」→_Glow「Kano」(720p).mp3",
+    "「Nightcore」→_Gyutto「Mosawo」(1080p).mp3",
+    "「Nightcore」→_Hanabira「Hanako_Oku」(1080p)(1).mp3",
+    "「Nightcore」→_Irony「Kano」(720p).mp3",
+    "「Nightcore」→_HANABI「Mr.Children」(360p).mp3",
+    "「Nightcore」→_Kimi_e_no_Uta「Mai_Kuraki」(720p).mp3",
+    "「Nightcore」→_Kanojo_Wa_Tabi_Ni_Deru「Sana」(1080p).mp3",
+    "「Nightcore」→_Lemon「Kenshi_Yonezu」(720p).mp3",
+    "「Nightcore」→_Mocha「Sana」(1080p).mp3",
+    "「Nightcore」→_Miss_U「Ms.OOJA」(720p).mp3",
+    "「Nightcore」→_Neko「DISH」(1080p).mp3",
+    "「Nightcore」→_Paprika「Kenshi_Yonezu_&_Foorin」(COVER)(1080p).mp3",
+    "「Nightcore」→_Your_Song「Super_Beaver」(1080p).mp3",
+    "「Nightcore」→_Irony「Kano」(1080p).mp3",
+    "「Nightcore」→_Pretender「Official髭男dism」(COVER)(1080p).mp3",
+    "「Nightcore」→_キセキ「GReeeeN」(720p).mp3",
+    "「Nightcore」→_あなたの好きなところ「西野カナ」(360p).mp3",
+    "「Nightcore」→_サヨナラCOLOR「SUPER_BUTTER_DOG」(1080p).mp3",
+    "「Nightcore」→_君さえいなけりゃ「KOBASOLO」(720p).mp3",
+    "「Nightcore」→_フィクション「sumika」(720p).mp3",
+    "「Nightcore」→_夏霞「あたらよ」(720p).mp3",
+    "「Nightcore」→_奏「スキマスイッチ」(360p).mp3",
+    "「Nightcore」→_好きな人がいること「JY」(360p).mp3",
+    "「_Nightcore_」_→_I_Hate_Me_✖(1080p).mp3",
+    "「Nightcore」→_トリセツ「西野カナ」(720p).mp3",
+    "「Nightcore」→_高嶺の花子さん「back_number」(720p).mp3",
+    "「_Nightcore_」_→_Kanawanai_Koi_Demo_✖(1080p)(1).mp3",
+    "「_Nightcore_」_→_LOVE_SONG_✖(1080p).mp3",
+    "「_Nightcore_」_→_Suki_de,_Suki_de,_Sukinanoni..._✖(1080p).mp3",
+    "【GUMI】KING【Kanaria】(720p).mp3",
+    "【GUMI】エンヴィーベイビー【Kanaria】(720p).mp3",
+    "【MV】ファンサ／mona(CV：夏川椎菜)【HoneyWorks】(1080p)(1).mp3",
+    "【Penta】_RENAI_Decorate_【Original_Choreograph】(720p).mp3",
+    "ねむるまち_feat.yama__(Official_Video)(1080p).mp3",
+    "ぎゅっと_Gyutto_-_Mosawo_もさを__Lyrics_Video(1080p).mp3",
+    "インドア系ならトラックメイカー_covered_by_Uto_＆_Nabi(1080p).mp3",
+    "「_Nightcore_」_→_Last_Kiss_✖(1080p).mp3",
+    "ヨルシカ_-_ただ君に晴れ_(MUSIC_VIDEO)(1080p).mp3",
+    "一首好聽的日語歌《彼女は旅に出る》冰鎮豆沙君【中日歌詞Lyrics】(1080p).mp3",
+    "不登校のあなたへ(1080p).mp3",
+    "ヨルシカ_-_ただ君に晴れ_(MUSIC_VIDEO)(720p).mp3",
+    "💳💸_sakehands_-_PLASTIC_ft._Good_Intent_中英文歌詞_Lyrics(720p).mp3",
+    "🌸_Cloudier_-_A_Centimetre_Apart_[_Sylrica_Remix_]_🎧(720p).mp3",
+    "米津玄師__MV「Lemon」(1080p).mp3"
+]
+)
 //function temporary
 
 function skip() {
@@ -980,5 +1336,5 @@ function notif(message) {
 }
 
 window.addEventListener("keydown",e => {
-    if(e.keyCode == 65 && e.ctrlKey) skip()
+    if(e.keyCode == 39 && e.ctrlKey) skip()
 })

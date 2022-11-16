@@ -12,3 +12,4 @@
 - add feature if it's online or offline
 
 - add queue feature (music in group/collection and played one afther anoter)
+- when ctr was right click show custom context menu
