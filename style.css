@@ -729,6 +729,35 @@
 
             overflow: ellipsis;
         }
+        .ctr-context-menu {
+            position: fixed;
+            z-index: auto;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            width: 200px;
+            padding: 10px;
+            max-height: 50px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            background-color: pink;
+            box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.4);
+        }
+        .ctr-context-parameters {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+            width: 100%;
+        }
+
         @keyframes ripple-effect {
             from {
                 height: 0;
