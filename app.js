@@ -708,7 +708,7 @@ function create_collection() {
         }
     }
 }
-var context_menu = (async () => {
+var context_menu = (() => {
 
     let appended = false
 
