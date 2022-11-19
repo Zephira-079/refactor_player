@@ -492,6 +492,12 @@ function create_collection() {
                 // add ready state here instead of public ready state
                 source_collection.play(path, name)
             })
+
+            ctr_group.addEventListener("contextmenu", e => {
+                e.preventDefault()
+                context_menu.move(e, name)
+            })
+
             ctr_group.addEventListener("pointerover", async () => {
                 ctr_group.style.boxShadow = "4px 4px 4px rgb(180, 184, 227), -4px -4px 4px rgb(180, 184, 227),4px -4px 4px rgb(180, 184, 227),-4px 4px 4px rgb(180, 184, 227)"
                 ctr_group.style.transform = "scale(1.2)"
@@ -610,6 +616,12 @@ function create_collection() {
                     // add ready state here instead of public ready state
                     source_collection.play(path, name)
                 })
+
+                ctr_group.addEventListener("contextmenu", e => {
+                    e.preventDefault()
+                    context_menu.move(e, name)
+                })
+
                 ctr_group.addEventListener("pointerover", async () => {
                     ctr_group.style.boxShadow = "4px 4px 4px rgb(180, 184, 227), -4px -4px 4px rgb(180, 184, 227),4px -4px 4px rgb(180, 184, 227),-4px 4px 4px rgb(180, 184, 227)"
                     ctr_group.style.transform = "scale(1.2)"
@@ -696,6 +708,29 @@ function create_collection() {
         }
     }
 }
+var context_menu = (async () => {
+
+    let appended = false
+
+    const ctx = document.createElement("div")
+    ctx.setAttribute("class", "ctr-ctx")
+
+    const ctr_td = document.createElement("div")
+    ctr_td.setAttribute("class", "ctr-ctx-td")
+
+    ctx.appendChild(ctr_td)
+
+    return {
+        move(event, name) {
+            if (!appended) body.appendChild(ctx)
+
+            ctx.style.top = `${event.clientY}px`
+            ctx.style.left = `${event.clientX}px`
+            ctr_td.textContent = `${name}`
+
+        }
+    }
+})()
 
 manifest_option.addEventListener("click", manifest_option_state)
 manifest_containers.addEventListener("click", manifest_containers_state)

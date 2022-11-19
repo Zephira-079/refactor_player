@@ -729,7 +729,7 @@
 
             overflow: ellipsis;
         }
-        .ctr-context-menu {
+        .ctr-ctx {
             position: fixed;
             z-index: auto;
 
@@ -748,7 +748,7 @@
             background-color: pink;
             box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.4);
         }
-        .ctr-context-parameters {
+        .ctr-ctx-td {
             display: flex;
             justify-content: start;
             align-items: center;
