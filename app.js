@@ -362,6 +362,10 @@ var source_collection = (function () {
                     audio_player_icon.pause()
                 }, 200)
             }
+        },
+        state() {
+            // todo fix this thing
+            audio_state()
         }
     }
 })()
@@ -810,8 +814,13 @@ function notif(message) {
 }
 
 window.addEventListener("keydown", e => {
+    const search = document.querySelector(".search")
+
     if (e.keyCode == 39 && e.ctrlKey) skip()
-})
+    if (e.keyCode == 32 && document.activeElement != search) source_collection.state()
+    if (e.keyCode == 39) source_collection.goAt(source_collection.audio().currentTime + 10)
+    if (e.keyCode == 37) source_collection.goAt(source_collection.audio().currentTime - 10)
+}, true)
 
 add_ctr_header("KawaiiNeko Collection")
 const kawaiineko = create_collection()
