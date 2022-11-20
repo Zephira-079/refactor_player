@@ -430,6 +430,8 @@ function add_banner(file_path, obj_pos_x, obj_pos_y) {
 function add_ctr_header(value) {
     const ctr_header = document.createElement("div")
     ctr_header.setAttribute("class", "ctr-header")
+    ctr_header.setAttribute("contenteditable","")
+    ctr_header.setAttribute("spellchecker","false")
     ctr_header.textContent = value
 
     ctr_wrapper.appendChild(ctr_header)
@@ -719,15 +721,28 @@ var context_menu = (() => {
     ctr_td.setAttribute("class", "ctr-ctx-td")
 
     ctx.appendChild(ctr_td)
+    ctx.addEventListener("contextmenu",e => {
+        e.preventDefault()
+    })
+
+    for(const item of ["scroll","click","contextmenu"]){
+        ctr_wrapper.addEventListener(item, () => {
+            ctx.remove()
+        }, true)
+    }
 
     return {
         move(event, name) {
             if (!appended) body.appendChild(ctx)
+            const ctx_offset_x = event.clientX + ctx.getBoundingClientRect().width
+            const ctx_x = ctx_offset_x > innerWidth ? event.clientX - (ctx_offset_x - innerWidth) : event.clientX 
 
-            ctx.style.top = `${event.clientY}px`
-            ctx.style.left = `${event.clientX}px`
+            const ctx_offset_y = event.clientY + ctx.getBoundingClientRect().height
+            const ctx_y = ctx_offset_y > innerHeight ? event.clientY - (ctx_offset_y - innerHeight) : event.clientY 
+
+            ctx.style.top = `${ctx_y}px`
+            ctx.style.left = `${ctx_x}px`
             ctr_td.textContent = `${name}`
-
         }
     }
 })()
