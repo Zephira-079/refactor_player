@@ -817,9 +817,9 @@ window.addEventListener("keydown", e => {
     const search = document.querySelector(".search")
 
     if (e.keyCode == 39 && e.ctrlKey) skip()
-    if (e.keyCode == 32 && document.activeElement != search) source_collection.state()
-    if (e.keyCode == 39) source_collection.goAt(source_collection.audio().currentTime + 10)
-    if (e.keyCode == 37) source_collection.goAt(source_collection.audio().currentTime - 10)
+    if (e.keyCode == 32 && document.activeElement == body) source_collection.state()
+    if (e.keyCode == 39 && document.activeElement == body) source_collection.goAt(source_collection.audio().currentTime + 10)
+    if (e.keyCode == 37 && document.activeElement == body) source_collection.goAt(source_collection.audio().currentTime - 10)
 }, true)
 
 add_ctr_header("KawaiiNeko Collection")
