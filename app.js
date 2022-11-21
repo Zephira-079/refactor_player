@@ -242,6 +242,30 @@ var initializer = (function () {
 
     })()
 
+    const volume = (() => {
+        // todo fix these shitty code xd
+        const next = () => {
+            volume_manager.main(volume_manager.main() + .1)
+        }
+        const prev = () => {
+            volume_manager.main(volume_manager.main() - .1)
+        }
+        const label_name = () => {
+            try {
+                return `${volume_manager.main().toFixed(2) * 100}%`
+            }
+            catch {
+                return `100%`
+            }
+        }
+        const fun_name = () => {
+            return "volume"
+        }
+
+        const controls = create_controls(next, prev, label_name, fun_name)
+
+    })()
+
     setInterval(() => {
         // shifter(holder[0][0],holder[0][1])
         track_mode()
@@ -434,8 +458,8 @@ function add_banner(file_path, obj_pos_x, obj_pos_y) {
 function add_ctr_header(value) {
     const ctr_header = document.createElement("div")
     ctr_header.setAttribute("class", "ctr-header")
-    ctr_header.setAttribute("contenteditable","")
-    ctr_header.setAttribute("spellchecker","false")
+    ctr_header.setAttribute("contenteditable", "")
+    ctr_header.setAttribute("spellchecker", "false")
     ctr_header.textContent = value
 
     ctr_wrapper.appendChild(ctr_header)
@@ -449,7 +473,6 @@ function add_filler() {
 
 function create_collection() {
     let preview_timestamp = 10
-    let preview_min_volume = .6
     let add_track_icon = "+"
 
     const ctr_collection = document.createElement("div")
@@ -468,7 +491,13 @@ function create_collection() {
             ctr_preview.setAttribute("class", "ctr-preview")
             ctr_preview.setAttribute("poster", "school_girl.png")
             ctr_preview.currentTime = preview_timestamp
-            ctr_preview.volume = preview_min_volume
+            ctr_preview.volume = volume_manager.ctr()
+            ctr_preview.addEventListener("pointerover", (e) => {
+                e.target.volume = volume_manager.ctr_hover_in()
+            })
+            ctr_preview.addEventListener("pointerleave", (e) => {
+                volume_manager.ctr_hover_out()
+            })
 
             const add_track = document.createElement("div")
             add_track.setAttribute("class", "add-track")
@@ -592,7 +621,13 @@ function create_collection() {
                 ctr_preview.setAttribute("class", "ctr-preview")
                 ctr_preview.setAttribute("poster", "school_girl.png")
                 ctr_preview.currentTime = preview_timestamp
-                ctr_preview.volume = preview_min_volume
+                ctr_preview.volume = volume_manager.ctr()
+                ctr_preview.addEventListener("pointerover", (e) => {
+                    e.target.volume = volume_manager.ctr_hover_in()
+                })
+                ctr_preview.addEventListener("pointerleave", (e) => {
+                    volume_manager.ctr_hover_out()
+                })
 
                 const add_track = document.createElement("div")
                 add_track.setAttribute("class", "add-track")
@@ -725,11 +760,11 @@ var context_menu = (() => {
     ctr_td.setAttribute("class", "ctr-ctx-td")
 
     ctx.appendChild(ctr_td)
-    ctx.addEventListener("contextmenu",e => {
+    ctx.addEventListener("contextmenu", e => {
         e.preventDefault()
     })
 
-    for(const item of ["scroll","click","contextmenu"]){
+    for (const item of ["scroll", "click", "contextmenu"]) {
         ctr_wrapper.addEventListener(item, () => {
             ctx.remove()
         }, true)
@@ -739,14 +774,57 @@ var context_menu = (() => {
         move(event, name) {
             if (!appended) body.appendChild(ctx)
             const ctx_offset_x = event.clientX + ctx.getBoundingClientRect().width
-            const ctx_x = ctx_offset_x > innerWidth ? event.clientX - (ctx_offset_x - innerWidth) : event.clientX 
+            const ctx_x = ctx_offset_x > innerWidth ? event.clientX - (ctx_offset_x - innerWidth) : event.clientX
 
             const ctx_offset_y = event.clientY + ctx.getBoundingClientRect().height
-            const ctx_y = ctx_offset_y > innerHeight ? event.clientY - (ctx_offset_y - innerHeight) : event.clientY 
+            const ctx_y = ctx_offset_y > innerHeight ? event.clientY - (ctx_offset_y - innerHeight) : event.clientY
 
             ctx.style.top = `${ctx_y}px`
             ctx.style.left = `${ctx_x}px`
             ctr_td.textContent = `${name}`
+        }
+    }
+})()
+
+var volume_manager = (() => {
+    // todo
+
+    let master_volume = 1
+    let ctr_volume = .4
+    let main_volume = 1
+
+    return {
+        master(number) {
+            if (undefined || isNaN(number)) return master_volume
+            else {
+                master_volume = number > 1 ? 1 : number < 0 ? 0 : number
+                source_collection.audio().volume = master_volume * main_volume
+
+                return master_volume
+            }
+        },
+        ctr(number) {
+            if (undefined || isNaN(number)) return ctr_volume
+            else {
+                ctr_volume = number > 1 ? 1 : number < 0 ? 0 : number
+                return master_volume * ctr_volume
+            }
+        },
+        main(number) {
+            if (undefined || isNaN(number)) return main_volume
+            else {
+                main_volume = number > 1 ? 1 : number < 0 ? 0 : number
+                source_collection.audio().volume = master_volume * main_volume
+
+                return main_volume
+            }
+        },
+        ctr_hover_in() {
+            source_collection.audio().volume = master_volume * main_volume / 4
+            return master_volume * ctr_volume + (1 - ctr_volume - .2) * main_volume
+        },
+        ctr_hover_out() {
+            source_collection.audio().volume = master_volume * main_volume
         }
     }
 })()
