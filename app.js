@@ -769,7 +769,7 @@ const urlparams = (() => {
         return url
     }
     this.create_link = function (pathname) {
-        const url = new URL(window.location.href)
+        const url = new URL(window.location.href.split("?")[0])
         url.searchParams.append("q", pathname)
         return url
     }
@@ -783,7 +783,7 @@ const urlparams = (() => {
         const name = decodeURI(get_q.slice(get_q.lastIndexOf("/")).slice(1))
 
         if (get_q) {
-            const q_tab = create_tab(`Play : ${name} \nBy clicking at this tab`).element()
+            const q_tab = create_tab(`Play : ${name} \nBy clicking on this tab, Else Trust Issue "UwUntu"`).element()
             q_tab.addEventListener("click", () => {
                 source_collection.play(path, name)
                 q_tab.remove()
