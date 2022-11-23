@@ -11,6 +11,18 @@ const fl_wrapper = document.querySelector(".fl-wrapper")
 
 const body = document.body
 
+function loadScript(url, callback) {
+    const script = document.createElement("script")
+    script.type = "text/javascript"
+    script.src = url
+    script.onload = function () {
+        callback()
+    }
+    document.head.appendChild(script)
+}
+function sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min)) + min
 }
@@ -365,7 +377,7 @@ var source_collection = (function () {
             }
             else {
                 audio_play_state()
-                // temporary notif
+                // todo temporary notif
                 notif(name)
 
                 initializer.recent_init(path, name)
@@ -530,7 +542,7 @@ function create_collection() {
 
             ctr_group.addEventListener("contextmenu", e => {
                 e.preventDefault()
-                context_menu.move(e, name)
+                context_menu.move(e, path, name)
             })
 
             ctr_group.addEventListener("pointerover", async () => {
@@ -660,7 +672,7 @@ function create_collection() {
 
                 ctr_group.addEventListener("contextmenu", e => {
                     e.preventDefault()
-                    context_menu.move(e, name)
+                    context_menu.move(e, path, name)
                 })
 
                 ctr_group.addEventListener("pointerover", async () => {
@@ -749,6 +761,53 @@ function create_collection() {
         }
     }
 }
+
+const urlparams = (() => {
+    this.get_search = function () {
+        const url = new URLSearchParams(window.location.search)
+
+        return url
+    }
+    this.create_link = function (pathname) {
+        const url = new URL(window.location.href)
+        url.searchParams.append("q", pathname)
+        return url
+    }
+
+    const get_q = get_search().get("q")
+
+    // todo remove this later 
+    loadScript("cs_tab/app.js", function () {
+
+        const path = decodeURI(get_q.slice(0, get_q.lastIndexOf("/")))
+        const name = decodeURI(get_q.slice(get_q.lastIndexOf("/")).slice(1))
+
+        if (get_q) {
+            const q_tab = create_tab(`Play : ${name} \nBy clicking at this tab`).element()
+            q_tab.addEventListener("click", () => {
+                source_collection.play(path, name)
+                q_tab.remove()
+            })
+        }
+        else {
+            // greattings
+            const greetings = create_tab("Nice to see you!!")
+            setTimeout(() => {
+                greetings.remove()
+            }, 5000)
+        }
+    })
+
+    return {
+        get_search() {
+            return get_search()
+        },
+        create_link(pathname) {
+            return create_link(pathname)
+        }
+    }
+})()
+
 var context_menu = (() => {
 
     let appended = false
@@ -759,7 +818,14 @@ var context_menu = (() => {
     const ctr_td = document.createElement("div")
     ctr_td.setAttribute("class", "ctr-ctx-td")
 
+    //todo
+    const link_td = document.createElement("div")
+    link_td.setAttribute("class", "ctr-ctx-td")
+    link_td.style.pointerEvents = `auto`
+    link_td.style.justifyContent = `center`
+
     ctx.appendChild(ctr_td)
+    ctx.appendChild(link_td)
     ctx.addEventListener("contextmenu", e => {
         e.preventDefault()
     })
@@ -768,10 +834,19 @@ var context_menu = (() => {
         ctr_wrapper.addEventListener(item, () => {
             ctx.remove()
         }, true)
+        ctx.addEventListener(item, () => {
+            ctx.remove()
+        }, true)
+
+    }
+
+    // todo copy_link
+    async function copy_link(path, name) {
+        await navigator.clipboard.writeText(urlparams.create_link(encodeURI(`${path}/${name}`)))
     }
 
     return {
-        move(event, name) {
+        move(event, path, name) {
             if (!appended) body.appendChild(ctx)
             const ctx_offset_x = event.clientX + ctx.getBoundingClientRect().width
             const ctx_x = ctx_offset_x > innerWidth ? event.clientX - (ctx_offset_x - innerWidth) : event.clientX
@@ -782,6 +857,11 @@ var context_menu = (() => {
             ctx.style.top = `${ctx_y}px`
             ctx.style.left = `${ctx_x}px`
             ctr_td.textContent = `${name}`
+            link_td.textContent = `copy link`
+            // todo shall fix this omg aaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhhhhhhhhhh i can't think anymore.
+            link_td.addEventListener("click", () => {
+                copy_link(path, name)
+            }, true)
         }
     }
 })()
@@ -873,7 +953,6 @@ const manifest_recent_tracks = (() => {
         }
     }
 })()
-
 
 //function temporary
 

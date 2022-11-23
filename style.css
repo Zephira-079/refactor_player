@@ -746,7 +746,6 @@
 
             width: 200px;
             padding: 10px;
-            max-height: 50px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -768,6 +767,9 @@
             color: white;
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
             width: 100%;
+            min-height: 30px;
+
+            /* copy_link.style.pointerEvents = `auto` at app.js for copy_link only */
         }
 
         @keyframes ripple-effect {

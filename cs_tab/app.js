@@ -59,6 +59,9 @@ function create_tab(text) {
     return {
         remove() {
             tab.remove()
+        },
+        element() {
+            return tab
         }
     }
 }
@@ -67,8 +70,3 @@ function create_tab(text) {
 // }
 
 //temporary 
-
-const greetings = create_tab("Nice to see you!!")
-setTimeout(() => {
-    greetings.remove()
-}, 5000);
