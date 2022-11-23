@@ -783,7 +783,7 @@ const urlparams = (() => {
         const name = decodeURI(get_q.slice(get_q.lastIndexOf("/")).slice(1))
 
         if (get_q) {
-            const q_tab = create_tab(`Play : ${name} \nBy clicking on this tab, Else Trust Issue "UwUntu"`).element()
+            const q_tab = create_tab(`Play : ${name} \nBy clicking on this tab, Else Trust Issue "UwUntu ૮ ˶ᵔ ᵕ ᵔ˶ ა"`).element()
             q_tab.addEventListener("click", () => {
                 source_collection.play(path, name)
                 q_tab.remove()
