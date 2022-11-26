@@ -970,13 +970,17 @@ function notif(message) {
     })
 }
 
-window.addEventListener("keydown", e => {
+window.addEventListener("keyup", e => {
     const search = document.querySelector(".search")
 
     if (e.keyCode == 39 && e.ctrlKey) skip()
     if (e.keyCode == 32 && document.activeElement == body) source_collection.state()
     if (e.keyCode == 39 && document.activeElement == body) source_collection.goAt(source_collection.audio().currentTime + 10)
     if (e.keyCode == 37 && document.activeElement == body) source_collection.goAt(source_collection.audio().currentTime - 10)
+    if (e.keyCode == 70 && document.activeElement == body) manifest_option_state()
+    if (e.keyCode == 68 && document.activeElement == body) manifest_containers_state()
+    if (e.keyCode == 83 && document.activeElement == body) manifest_track_controls_state()
+    if (e.keyCode == 65 && document.activeElement == body) search.focus()
 }, true)
 
 add_ctr_header("KawaiiNeko Collection")
