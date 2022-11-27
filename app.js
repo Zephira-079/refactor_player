@@ -499,18 +499,9 @@ function create_collection() {
     ctr_wrapper.appendChild(ctr_collection)
 
     return {
-        async only(path, name) {
+        only(path, name) {
             //todo fix again xd
-            try {
-                path = await path
-                path = path.path
-
-                names = await names
-                names = names.list
-            }
-            catch {
-                
-            }
+            // damn fix this
             initializer.collection_init(path, name)
 
             const ctr_group = document.createElement("div")
@@ -945,7 +936,7 @@ add_banner("./banner/628286.webp")
 add_filler()
 
 const manifest_recent_tracks = (() => {
-    let holder_range = 10
+    let holder_range = 20
     const holder = []
     const fetch_recent_tracks = JSON.parse(localStorage.getItem("recent_tracks"))
 
@@ -1018,4 +1009,4 @@ const kawaiinyeow = create_collection()
 
 kawaiineko.many(fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiineko.json"), fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiineko.json"))
 
-kawaiinyeow.many(fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiinyeow.json"), fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiineko.json"))
+kawaiinyeow.many(fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiinyeow.json"), fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiinyeow.json"))
