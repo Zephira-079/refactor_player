@@ -405,6 +405,28 @@ var source_collection = (function () {
                 }, 200)
             }
         },
+        async play_link(url) {
+            audio_play_state()
+            // todo temporary notif
+            notif(url)
+
+            audio.src = encodeURI(`$${url}`)
+            media.src = encodeURI(`$${url}`)
+
+            await audio.play()
+            await media.play()
+            media.muted = true
+
+            title.textContent = `${url}`
+            audio_player_icon.src = encodeURI(`${url}`)
+            await audio_player_icon.play()
+            audio_player_icon.muted = true
+            setTimeout(() => {
+                audio_player_icon.currentTime = 10
+                audio_player_icon.pause()
+            }, 200)
+
+        },
         state() {
             // todo fix this thing
             audio_state()
@@ -640,7 +662,7 @@ function create_collection() {
                 names = names.list
             }
             catch {
-                
+
             }
             names.forEach((name, index) => {
                 initializer.collection_init(path, name)
