@@ -1,5 +1,17 @@
-## rcph_player
-- I Create a Music Player to Soothe out My Stress ૮ ˶ᵔ ᵕ ᵔ˶ ა
+
+
+<h1 style="color:pink; text-indent: 40px; text-shadow: 1px 1px 2px black;" >
+    Yhm_Player
+</h1>
+
+## I Create a Music Player to Soothe out My Stress ૮ ˶ᵔ ᵕ ᵔ˶ ა
+<div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+    <img src="school_girl.png" style="width:100vw; max-width: 400px; aspect-ratio: 1/1; background: lavenderblush; border: dotted 5px pink; border-radius: 10px; box-shadow: 0px 0px 100px pink;">
+    <h2 style="color: pink; text-shadow: 2px 2px 1px black;"> 
+    _Cutie Profile ૮ ˶ᵔ ᵕ ᵔ˶ ა_
+    </h2>
+</div>
+
 
 ## quick documentation? 
 
@@ -25,4 +37,3 @@ starts from last_track to first_track
 - [rcph_player_src](https://rcph-smz.github.io/rcph_player_src/)
 
 #### this is pain :D
-

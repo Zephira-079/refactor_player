@@ -131,7 +131,7 @@ var initializer = (function () {
         })
     })
 
-    const create_controls = (next, prev, label_name, fun_name) => {
+    const create_controls = (next, prev, label_name, fun_name, update_time) => {
 
         const track_controls_btn = document.createElement("div")
         track_controls_btn.setAttribute("class", "track-controls-btn")
@@ -161,6 +161,13 @@ var initializer = (function () {
         track_controls_btn.appendChild(track_controls_btn_label)
         track_controls_btn.appendChild(track_controls_btn_prev)
         track_controls_btn.appendChild(track_controls_btn_next)
+        //update_time parameter is a special parameter to modify label_name parameter every seconds xd
+        if (update_time) {
+            setInterval(() => {
+                label_name = update_time
+                track_controls_btn_label.textContent = `${fun_name()} : ${label_name()}`
+            }, 1000)
+        }
 
     }
 
@@ -269,6 +276,7 @@ var initializer = (function () {
             volume_manager.main(volume_manager.main() - .1)
         }
         const label_name = () => {
+            //TODO the only code with try catch xd reason: the volume_manager isn't initialize yet :) so it would return error
             try {
                 return `${volume_manager.main().toFixed(2) * 100}%`
             }
@@ -282,6 +290,56 @@ var initializer = (function () {
 
         const controls = create_controls(next, prev, label_name, fun_name)
 
+    })()
+
+    const navigation = (() => {
+        // todo fix these shitty code xd
+        const next = () => {
+            skip()
+        }
+        const prev = () => {
+            source_collection.state()
+        }
+
+        const label_name = () => {
+            return "skip"
+        }
+        const fun_name = () => {
+            return "play/pause"
+        }
+
+        const controls = create_controls(next, prev, label_name, fun_name)
+
+    })()
+
+    const progression = (() => {
+        // todo fix these shitty code xd
+
+        const next = () => {
+            source_collection.goAt(source_collection.audio().currentTime + 10)
+        }
+        const prev = () => {
+            source_collection.goAt(source_collection.audio().currentTime - 10)
+        }
+
+        const label_name = () => {
+            // specially these code
+            try {
+                return source_collection.audio().currentTime
+            }
+            catch {
+                return 0
+            }
+        }
+        const fun_name = () => {
+            return "duration"
+        }
+        function update_time() {
+            return label_name()
+        }
+
+        // todo fix this
+        const controls = create_controls(next, prev, label_name, fun_name, update_time)
     })()
 
     setInterval(() => {
@@ -967,7 +1025,7 @@ const manifest_recent_tracks = (() => {
         for (f of fetch_recent_tracks) {
             holder.push(f)
         }
-        add_ctr_header("recent_tracks")
+        add_ctr_header("recent_of_you")
         const collection = create_collection()
         for (h of holder) {
             collection.only(h[0], h[1])
