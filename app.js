@@ -1067,7 +1067,17 @@ function notif(message) {
             icon: "school_girl.png"
         })
     })
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(function (registration) {
+            registration.showNotification("Player", {
+                body: `currently playing: ${message}`,
+                tag: `player`,
+                icon: "school_girl.png"
+            })
+        })
+    }
 }
+
 
 window.addEventListener("keyup", e => {
     const search = document.querySelector(".search")
@@ -1077,8 +1087,8 @@ window.addEventListener("keyup", e => {
     if (e.keyCode == 39 && document.activeElement == body) source_collection.goAt(source_collection.audio().currentTime + 10)
     if (e.keyCode == 37 && document.activeElement == body) source_collection.goAt(source_collection.audio().currentTime - 10)
     if (e.keyCode == 70 && document.activeElement == body) manifest_option_state()
-    if (e.keyCode == 68 && document.activeElement == body) manifest_containers_state()
-    if (e.keyCode == 83 && document.activeElement == body) manifest_track_controls_state()
+    if (e.keyCode == 68 && document.activeElement == body) manifest_track_controls_state()
+    if (e.keyCode == 83 && document.activeElement == body) manifest_containers_state()
     if (e.keyCode == 65 && document.activeElement == body) search.focus()
 }, true)
 
