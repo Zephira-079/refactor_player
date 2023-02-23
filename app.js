@@ -32,6 +32,9 @@ function sleep(milliseconds) {
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min)) + min
 }
+function clamp(number, min, max) {
+    return Math.min(Math.max(number, min), max);
+}
 
 const internet_status = (() => {
     // still nothing here
@@ -443,6 +446,7 @@ var source_collection = (function () {
                 audio_play_state()
                 // todo temporary notif
                 notif(name)
+                volume_manager.speak(name)
 
                 initializer.recent_init(path, name)
                 manifest_recent_tracks.only(path, name)
@@ -972,6 +976,10 @@ var volume_manager = (() => {
     let ctr_volume = .4
     let main_volume = 1
 
+    let synth = window.speechSynthesis
+    let utterance = null
+    let audio = source_collection.audio()
+
     return {
         master(number) {
             if (undefined || isNaN(number)) return master_volume
@@ -1004,6 +1012,30 @@ var volume_manager = (() => {
         },
         ctr_hover_out() {
             source_collection.audio().volume = master_volume * main_volume
+        },
+        speak(text) {
+            if (utterance && synth.speaking) {
+                synth.cancel()
+            }
+
+            utterance = new SpeechSynthesisUtterance(text)
+
+            utterance.lang = 'ja-JP'
+            utterance.pitch = 1
+            utterance.rate = 1
+            utterance.volume = 1
+
+            synth.speak(utterance)
+
+            audio.volume = 1
+            const checkSpeechStatus = setInterval(() => {
+                if (synth.speaking) {
+                    audio.volume = ctr_volume
+                } else {
+                    audio.volume = main_volume
+                    clearInterval(checkSpeechStatus)
+                }
+            }, 50)
         }
     }
 })()
@@ -1067,6 +1099,22 @@ function notif(message) {
             icon: "school_girl.png"
         })
     })
+    if ("Notification" in window) {
+        // ask for permission to show notifications
+        Notification.requestPermission()
+            .then(permission => {
+                if (permission === "granted") {
+                    // show a notification
+                    new Notification("Hello, world!")
+                }
+            })
+            .catch(err => {
+                console.error("Failed to request notification permission:", err)
+            })
+    } else {
+        console.error("Notifications not supported in this browser.")
+    }
+
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then(function (registration) {
             registration.showNotification("Player", {
