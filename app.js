@@ -446,7 +446,7 @@ var source_collection = (function () {
                 audio_play_state()
                 // todo temporary notif
                 notif(name)
-                volume_manager.speak(name)
+                volume_manager.speak(`${name}, Yuhimee Player`)
 
                 initializer.recent_init(path, name)
                 manifest_recent_tracks.only(path, name)
@@ -1016,26 +1016,28 @@ var volume_manager = (() => {
         speak(text) {
             if (utterance && synth.speaking) {
                 synth.cancel()
-            }
-
-            utterance = new SpeechSynthesisUtterance(text)
-
-            utterance.lang = 'ja-JP'
-            utterance.pitch = 1
-            utterance.rate = 1
-            utterance.volume = 1
-
-            synth.speak(utterance)
-
-            audio.volume = 1
-            const checkSpeechStatus = setInterval(() => {
+              }
+          
+              utterance = new SpeechSynthesisUtterance(text)
+          
+              // Set voice to a feminine voice
+              utterance.voiceURI = 'Google UK English Female'
+              utterance.lang = 'en-GB'
+              utterance.pitch = 1
+              utterance.rate = 1
+              utterance.volume = 1
+          
+              synth.speak(utterance)
+          
+              audio.volume = 1
+              const checkSpeechStatus = setInterval(() => {
                 if (synth.speaking) {
-                    audio.volume = ctr_volume
+                  audio.volume = ctr_volume
                 } else {
-                    audio.volume = main_volume
-                    clearInterval(checkSpeechStatus)
+                  audio.volume = main_volume
+                  clearInterval(checkSpeechStatus)
                 }
-            }, 50)
+              }, 50)
         }
     }
 })()
