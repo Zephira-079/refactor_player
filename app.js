@@ -446,7 +446,8 @@ var source_collection = (function () {
                 audio_play_state()
                 // todo temporary notif
                 notif(name)
-                volume_manager.speak(`${name}, Yuhimee Player`)
+                console.log(decodeURIComponent(name).replace(/[^a-zA-Z0-9]/g, " ").replace(/\s+/g, " ").trim())
+                volume_manager.speak(`${decodeURIComponent(name).replace(/[^a-zA-Z0-9]/g, " ").replace(/\s+/g, " ").trim()}, Yuhimee Player`)
 
                 initializer.recent_init(path, name)
                 manifest_recent_tracks.only(path, name)
@@ -1101,21 +1102,6 @@ function notif(message) {
             icon: "school_girl.png"
         })
     })
-    if ("Notification" in window) {
-        // ask for permission to show notifications
-        Notification.requestPermission()
-            .then(permission => {
-                if (permission === "granted") {
-                    // show a notification
-                    new Notification("Hello, world!")
-                }
-            })
-            .catch(err => {
-                console.error("Failed to request notification permission:", err)
-            })
-    } else {
-        console.error("Notifications not supported in this browser.")
-    }
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then(function (registration) {
