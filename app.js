@@ -11,7 +11,7 @@ const fl_wrapper = document.querySelector(".fl-wrapper")
 
 const body = document.body
 
-async function fetch_tracks(link) {
+async function fetch_json(link) {
     const f = await fetch(link)
     const get_json = await f.json()
     return get_json
@@ -717,16 +717,11 @@ function create_collection() {
         },
         async many(path, names) {
             //todo fix again xd
-            try {
-                path = await path
-                path = path.path
-
+            if(names.constructor.name == "Promise") {
                 names = await names
                 names = names.list
             }
-            catch {
 
-            }
             names.forEach((name, index) => {
                 initializer.collection_init(path, name)
 
@@ -1133,6 +1128,6 @@ const kawaiineko = create_collection()
 add_ctr_header("KawaiiNyeow Collection")
 const kawaiinyeow = create_collection()
 
-kawaiineko.many(fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiineko.json"), fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiineko.json"))
+kawaiineko.many("https://zephira-079.github.io/rcph_player_src/KawaiiNyahn", fetch_json("https://zephira-079.github.io/rcph_player_src/fetch/kawaiinyahn.json"))
 
-kawaiinyeow.many(fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiinyeow.json"), fetch_tracks("https://rcph-smz.github.io/rcph_player_src/fetch/kawaiinyeow.json"))
+kawaiinyeow.many("https://zephira-079.github.io/rcph_player_src/KawaiiNyeow", fetch_json("https://zephira-079.github.io/rcph_player_src/fetch/kawaiinyeow.json"))
