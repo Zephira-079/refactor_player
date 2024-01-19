@@ -1120,7 +1120,7 @@ window.addEventListener("keyup", e => {
     if (e.keyCode == 70 && document.activeElement == body) manifest_option_state()
     if (e.keyCode == 68 && document.activeElement == body) manifest_track_controls_state()
     if (e.keyCode == 83 && document.activeElement == body) manifest_containers_state()
-    if (e.keyCode == 65 && document.activeElement == body) search.focus()
+    if (e.keyCode == 191 && document.activeElement == body) search.focus()
 }, true)
 
 add_ctr_header("KawaiiNeko Collection")
